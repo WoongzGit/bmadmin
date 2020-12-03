@@ -1,4 +1,4 @@
-package com.bmadmin.member.entity;
+package com.bmadmin.board.entity;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -15,8 +15,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity(name="member")
-public class MemberEntity implements UserDetails{
+@Entity(name="board")
+public class BoardEntity implements UserDetails{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "memberIdx", unique = true)
@@ -58,11 +58,11 @@ public class MemberEntity implements UserDetails{
 	@Column(name = "memberState", nullable=false)
 	private String memberState;
 	
-	public MemberEntity() {
+	public BoardEntity() {
 		
 	}
 	
-	public MemberEntity(Long memberIdx, String name, String email, String id, String password, 
+	public BoardEntity(Long memberIdx, String name, String email, String id, String password, 
 						String auth, Integer ranking, LocalDateTime createDate,
 						LocalDateTime modDate, String memberState) {
 		this.memberIdx = memberIdx;

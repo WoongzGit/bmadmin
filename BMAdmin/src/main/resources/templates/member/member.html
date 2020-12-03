@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8">
+    <title>sign up</title>
+    <script src="/js/jquery-3.1.0.js"></script>
+    <script>
+    	$(document).ready(function(){
+    		var init = function(){
+    			var totalPages = getList(1);
+    			var html = "";
+    			
+    			$("#paging").children().remove();
+    			
+    			for(var i = 1; i <= totalPages; i++){
+    				html += "<div id='page'>" + i + "</div>";
+    			}
+    			
+    			$("#paging").html(html);
+    		}
+   			var getList = function(page){
+   				var data = null;
+   				$.ajax({
+     			      url:"/admin/member"
+     			    , async:false
+     			    , type:'POST'
+     			    , data: {
+     			    	  pageSize:"20"
+     			    	, pageNum:(page - 1)
+     			    	, _csrf:$("#csrf").val()
+     			    }
+     			    , dataType:'json'
+     			    , success:function(e) {
+     			    	data = e;
+     			    	console.log(data);
+     			    }
+     			    , error:function(e) {
+     			    	console.log(e);
+     			    }
+     			});
+   				
+   				viewList(data);
+   				
+   				return data.totalPages;
+   			}
+   			
+   			var viewList = function(data){
+   				$("#post").children().remove();
+   				
+   				var html = "";
+   				for(var i = 0; i < data.size; i++){
+					html += '<div>';
+					html += '<div id="memberIdx" name="memberIdx"><span>memberIdx : </span><span>' + data.content[i].memberIdx + '</span></div>';
+					html += '<div id="name" name="name"><span>name : </span><span>' + data.content[i].name + '</span></div>';
+					html += '<div id="email" name="email"><span>email : </span><span>' + data.content[i].email + '</span></div>';
+					html += '<div id="id" name="id"><span>id : </span><span>' + data.content[i].id + '</span></div>';
+					html += '<div id="password" name="password"><span>password : </span><span>' + data.content[i].password + '</span></div>';
+					html += '<div id="auth" name="auth"><span>auth : </span><span>' + data.content[i].auth + '</span></div>';
+					html += '<div id="ranking" name="ranking"><span>ranking : </span><span>' + data.content[i].ranking + '</span></div>';
+					html += '<div id="createDate" name="createDate"><span>createDate : </span><span>' + data.content[i].createDate + '</span></div>';
+					html += '<div id="modDate" name="modDate"><span>modDate : </span><span>' + data.content[i].modDate + '</span></div>';
+					html += '<div id="memberState" name="memberState"><span>memberState : </span><span>' + data.content[i].memberState + '</span></div>';
+					html += '</div>';
+					html += '<hr>';
+   				}
+   				//$("#post").html(html);
+   			}
+   			
+   			$("#page").on("click", function(){
+   				//alert($(this).text());
+   				alert("test");
+   			});
+   			
+   			init();
+    	});
+    </script>
+  </head>
+  <body>
+    <h1>WelCome to Member Page!!</h1>
+    <hr>
+    <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <form action="/admin/member/logout" method="get">
+        <button id="logout" type="submit">로그아웃</button>
+    </form>
+    <div>
+    	<div>
+    		<a href="/admin/member"><span class="manage" id="memberManage">사용자 관리</span></a>
+    	</div>
+    	<div>
+    		<a href="/admin/board"><span class="manage" id="boardManage">게시판 관리</span></a>
+   		</div>
+   		<div>
+    		<a href="/admin/post"><span class="manage" id="postManage">게시물 관리</span></a>
+   		</div>
+    </div>
+    <hr>
+    	<span>사용자 리스트!!</span>
+    <hr>
+    <div id="post">
+    </div>
+    <div id="paging">
+    </div>
+  </body>
+</html>
