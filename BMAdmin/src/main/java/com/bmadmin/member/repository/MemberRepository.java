@@ -11,7 +11,5 @@ import com.bmadmin.member.entity.MemberEntity;
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
 	MemberEntity findByEmail(String email);
 	
-	MemberEntity findById(String Id);
-	
 	Page<MemberEntity> findAll(Pageable pageable);
 }

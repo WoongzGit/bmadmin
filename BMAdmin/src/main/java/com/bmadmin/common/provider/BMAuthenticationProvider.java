@@ -52,11 +52,11 @@ public class BMAuthenticationProvider implements AuthenticationProvider{
 		if(!loadedUser.isEnabled()) {
 			throw new DisabledException("User is disabled");
 		}
-		if(!passwordEncoder.matches(password, loadedUser.getPassword())) {
-			throw new BadCredentialsException("Password does not match stored value");
-		}
 		if(!loadedUser.isCredentialsNonExpired()) {
 			throw new CredentialsExpiredException("User credentials have expired");
+		}
+		if(!passwordEncoder.matches(password, loadedUser.getPassword())) {
+			throw new BadCredentialsException("Password does not match stored value");
 		}
 		UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(loadedUser, null, loadedUser.getAuthorities());
 		result.setDetails(authentication.getDetails());

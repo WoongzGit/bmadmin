@@ -1,5 +1,7 @@
 package com.bmadmin.member.controller;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +32,27 @@ public class MemberController {
 	/*
 	 * 회원 관리 페이지
 	 */
-	@GetMapping(value="/admin/member")
+	@GetMapping(value="/admin/member/list.html")
 	public String index () {
 		logger.info("index");
 		return "member/member";
 	}
 	
 	/*
+	 * 회원 관리 상세페이지
+	 */
+	@GetMapping(value="/admin/member/view.html")
+	public String view () {
+		logger.info("index");
+		return "member/view";
+	}
+	
+	/*
 	 * 회원 목록 조회
 	 */
-	@PostMapping(value="/admin/member", produces = {MediaType.APPLICATION_JSON_VALUE})
+	@PostMapping(value="/admin/members", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Page<MemberEntity>> list (@RequestParam int pageNum, @RequestParam int pageSize) {
 		logger.info("list");
-		logger.info("pageNum : " + pageNum);
-		logger.info("pageSize : " + pageSize);
 		return new ResponseEntity<Page<MemberEntity>>(memberService.findAll(PageRequest.of(pageNum, pageSize)), HttpStatus.OK);
 	}
 	
@@ -51,44 +60,54 @@ public class MemberController {
 	 * 회원 1인 상세 검색
 	 */
 	@GetMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> getOne (@PathVariable String id) {
+	public ResponseEntity<MemberEntity> getOne (@PathVariable Long id) {
 		logger.info("getOne");
-		return new ResponseEntity<MemberEntity>(memberService.findById(id), HttpStatus.OK);
+		MemberEntity retObj = null;
+		HttpStatus retCode = HttpStatus.OK;
+		Optional<MemberEntity> optionalMemberEntity = memberService.findById(id);
+		
+		if(optionalMemberEntity.isPresent()) {
+			retObj = optionalMemberEntity.get();
+		}else {
+			retCode = HttpStatus.NO_CONTENT;
+		}
+		
+		return new ResponseEntity<MemberEntity>(retObj, retCode);
 	}
 	
 	/*
 	 * 회원 1인 신규 등록
 	 */
-	@PostMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> insertOne (@PathVariable String id) {
+	@PostMapping(value="/admin/member", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<MemberEntity> insertOne (MemberEntity member) {
 		logger.info("insertOne");
-		return new ResponseEntity<MemberEntity>(memberService.findById(id), HttpStatus.OK);
+		return new ResponseEntity<MemberEntity>(memberService.save(member), HttpStatus.OK);
 	}
 	
 	/*
 	 * 회원 1인 수정
 	 */
 	@PutMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> updateOne (@PathVariable String id, MemberEntity member) {
+	public ResponseEntity<MemberEntity> updateOne (@PathVariable Long id, MemberEntity member) {
 		logger.info("updateOne");
-		return new ResponseEntity<MemberEntity>(memberService.findById(id), HttpStatus.OK);
+		return new ResponseEntity<MemberEntity>(memberService.UpdateById(id, member), HttpStatus.OK);
 	}
 	
 	/*
 	 * 회원 1인 삭제
 	 */
 	@DeleteMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> deleteOne (@PathVariable String id, MemberEntity member) {
+	public ResponseEntity<MemberEntity> deleteOne (@PathVariable Long id) {
 		logger.info("deleteOne");
-		return new ResponseEntity<MemberEntity>(memberService.findById(id), HttpStatus.OK);
+		return new ResponseEntity<MemberEntity>(memberService.deleteById(id), HttpStatus.OK);
 	}
 	
-//	@PostMapping(value="/email", produces = {MediaType.APPLICATION_JSON_VALUE})
-//	public ResponseEntity<MemberEntity> email (MemberEntity member) {
-//		logger.info("email");
-//		logger.info("=============================");
-//		logger.info(member.toString());
-//		logger.info("=============================");
-//		return new ResponseEntity<MemberEntity>(memberService.findByEmail(member), HttpStatus.OK);
-//	}
+	/*
+	 * 회원 1인 비밀번호 초기화
+	 */
+	@PostMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<MemberEntity> initPassword (@PathVariable Long id) {
+		logger.info("initPassword");
+		return new ResponseEntity<MemberEntity>(memberService.InitPasswordById(id), HttpStatus.OK);
+	}
 }

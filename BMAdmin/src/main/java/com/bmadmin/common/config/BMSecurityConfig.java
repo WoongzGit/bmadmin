@@ -35,7 +35,7 @@ public class BMSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/css/**", "/js/**", "/images/**", "*.html", "/h2-console/**");
+		web.ignoring().antMatchers("/admin/css/**", "/admin/js/**", "/admin/vender/**", "/admin/js/**", "/admin/images/**", "/*.ico");
 	}
 	
 	@Override
@@ -54,7 +54,7 @@ public class BMSecurityConfig extends WebSecurityConfigurerAdapter{
 		.and()
 			.formLogin()
 			.loginPage("/admin/login")
-			.loginProcessingUrl("/admin/login/process")
+			.loginProcessingUrl("/admin/loginProcess")
 			.failureHandler(failureHandler())
 			.successHandler(successHandler())
 			.permitAll()
@@ -68,7 +68,7 @@ public class BMSecurityConfig extends WebSecurityConfigurerAdapter{
 		.csrf()
 			.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 		.and()
-			.exceptionHandling().accessDeniedPage("/admin/denied");
+			.exceptionHandling().accessDeniedPage("/admin/denied.html");
 	}
 	
 	@Bean

@@ -30,10 +30,6 @@ public class MemberEntity implements UserDetails{
 	@Column(name = "email", unique = true, nullable=false)
 	private String email;
 	
-	/* 아이디 */
-	@Column(name = "id", unique = true, nullable=false)
-	private String id;
-	
 	/* 비밀번호 */
 	@Column(name = "password", nullable=false)
 	private String password;
@@ -54,27 +50,42 @@ public class MemberEntity implements UserDetails{
 	@Column(name = "modDate", nullable=true)
 	private LocalDateTime modDate;
 	
-	/* 계정상태 */
+	/* 회원계정상태 */
 	@Column(name = "memberState", nullable=false)
 	private String memberState;
+	
+	/* 관리자계정상태 */
+	@Column(name = "adminState", nullable=false)
+	private String adminState;
+	
+	/* 회원계정로그인시도횟수 */
+	@Column(name = "memberTry", nullable=true)
+	private Integer memberTry;
+	
+	/* 관리자계정로그인시도횟수 */
+	@Column(name = "adminTry", nullable=true)
+	private Integer adminTry;
 	
 	public MemberEntity() {
 		
 	}
 	
-	public MemberEntity(Long memberIdx, String name, String email, String id, String password, 
+	public MemberEntity(Long memberIdx, String name, String email, String password, 
 						String auth, Integer ranking, LocalDateTime createDate,
-						LocalDateTime modDate, String memberState) {
+						LocalDateTime modDate, String memberState, String adminState,
+						Integer memberTry, Integer adminTry) {
 		this.memberIdx = memberIdx;
 		this.name = name;
 		this.email = email;
-		this.id = id;
 		this.password = password;
 		this.auth = auth;
 		this.ranking = ranking;
 		this.createDate = createDate;
 		this.modDate = modDate;
 		this.memberState = memberState;
+		this.adminState = adminState;
+		this.memberTry = memberTry;
+		this.adminTry = adminTry;
 	}
 
 	public Long getMemberIdx() {
@@ -138,7 +149,11 @@ public class MemberEntity implements UserDetails{
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		boolean retObj = true;
+		if("PWLOCK".equals(getAdminState())){
+			retObj = false;
+		}
+		return retObj;
 	}
 
 	@Override
@@ -148,15 +163,11 @@ public class MemberEntity implements UserDetails{
 
 	@Override
 	public boolean isEnabled() {
-		return true;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
+		boolean retObj = true;
+		if("BLOCK".equals(getAdminState())){
+			retObj = false;
+		}
+		return retObj;
 	}
 
 	public Integer getRanking() {
@@ -189,5 +200,29 @@ public class MemberEntity implements UserDetails{
 
 	public void setMemberState(String memberState) {
 		this.memberState = memberState;
+	}
+
+	public String getAdminState() {
+		return adminState;
+	}
+
+	public void setAdminState(String adminState) {
+		this.adminState = adminState;
+	}
+
+	public Integer getMemberTry() {
+		return memberTry;
+	}
+
+	public void setMemberTry(Integer memberTry) {
+		this.memberTry = memberTry;
+	}
+
+	public Integer getAdminTry() {
+		return adminTry;
+	}
+
+	public void setAdminTry(Integer adminTry) {
+		this.adminTry = adminTry;
 	}
 }

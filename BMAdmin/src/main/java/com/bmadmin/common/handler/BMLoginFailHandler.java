@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -19,31 +22,49 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Service;
 
+import com.bmadmin.member.entity.MemberEntity;
+import com.bmadmin.member.service.MemberService;
+
 @Service
 public class BMLoginFailHandler implements AuthenticationFailureHandler{
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private MemberService memberService;
+	
+	@Autowired
+    private MessageSource messageSource;
 	
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException{
 		
 		logger.info("onAuthenticationFailure");
-		
-		request.setAttribute("username", request.getParameter("username"));
+		String cnt = messageSource.getMessage("pw.try.max.cnt", null, LocaleContextHolder.getLocale());
 		
 		if(exception instanceof AuthenticationServiceException) {
-			request.setAttribute("loginFailMsg", "존재하지 않는 사용자입니다.");
+			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.no.name", null, LocaleContextHolder.getLocale()));
 		} else if (exception instanceof BadCredentialsException) {
-			request.setAttribute("loginFailMsg", "이메일 또는 비밀번호가 틀립니다.");
+			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.not.match", null, LocaleContextHolder.getLocale()));
+			
+			MemberEntity member = memberService.findByEmail(request.getParameter("username"));
+			
+			member.setAdminTry(member.getAdminTry() + 1);
+			
+			if(member.getAdminTry() >= Integer.parseInt(cnt)) {
+				member.setAdminState("PWLOCK");
+			}
+			
+			memberService.save(member);
 		} else if(exception instanceof LockedException) {
-			request.setAttribute("loginFailMsg", "잠긴 계정입니다..");
+			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.pw.lock", new String[] {cnt}, LocaleContextHolder.getLocale()));
 		} else if(exception instanceof DisabledException) {
-			request.setAttribute("loginFailMsg", "비활성화된 계정입니다..");
+			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.lock.by.admin", null, LocaleContextHolder.getLocale()));
 		} else if(exception instanceof AccountExpiredException) {
-			request.setAttribute("loginFailMsg", "만료된 계정입니다..");
+			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.expired.id", null, LocaleContextHolder.getLocale()));
 		} else if(exception instanceof CredentialsExpiredException) {
-			request.setAttribute("loginFailMsg", "비밀번호가 만료되었습니다.");
+			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.expired.pw", null, LocaleContextHolder.getLocale()));
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/login");

@@ -1,10 +1,13 @@
 package com.bmadmin.member.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,16 +27,15 @@ public class MemberService implements UserDetailsService{
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	public MemberEntity findByEmail(MemberEntity member) {
-		return memberRepository.findByEmail(member.getEmail());
-	}
+	@Autowired
+    private MessageSource messageSource;
 	
 	public MemberEntity findByEmail(String memberEmail) {
 		return memberRepository.findByEmail(memberEmail);
 	}
 	
-	public MemberEntity findById(String memberId) {
-		return memberRepository.findById(memberId);
+	public Optional<MemberEntity> findById(Long memberIdx) {
+		return memberRepository.findById(memberIdx);
 	}
 	
 	public Page<MemberEntity> findAll(PageRequest pageable) {
@@ -41,10 +43,62 @@ public class MemberService implements UserDetailsService{
 	}
 	
 	public MemberEntity save(MemberEntity member) {
+		member.setAdminTry(0);
+		member.setCreateDate(LocalDateTime.now());
+		member.setMemberTry(0);
+		member.setModDate(LocalDateTime.now());
+		member.setRanking(0);
+		member.setPassword(passwordEncoder.encode(member.getEmail()));
 		memberRepository.save(member);
 		return member;
 	}
-
+	
+	public MemberEntity deleteById(Long id) {
+		Optional<MemberEntity> memberEntity = memberRepository.findById(id);
+		MemberEntity retObj = null;
+		if(memberEntity.isPresent()) {
+			retObj = memberEntity.get();
+			retObj.setMemberState("BLOCK");
+			retObj.setAdminState("BLOCK");
+			retObj.setModDate(LocalDateTime.now());
+			retObj = memberRepository.save(retObj);
+		}else {
+			retObj = null;
+		}
+		return retObj;
+	}
+	
+	public MemberEntity UpdateById(Long memberIdx, MemberEntity member) {
+		Optional<MemberEntity> memberEntity = memberRepository.findById(memberIdx);
+		MemberEntity retObj = null;
+		if(memberEntity.isPresent()) {
+			retObj = memberEntity.get();
+			retObj.setAuth((retObj.getAuth().equals(member.getAuth()))?retObj.getAuth():member.getAuth());
+			retObj.setMemberState((retObj.getMemberState().equals(member.getMemberState()))?retObj.getMemberState():member.getMemberState());
+			retObj.setAdminState((retObj.getAdminState().equals(member.getAdminState()))?retObj.getAdminState():member.getAdminState());
+			retObj.setMemberTry((retObj.getMemberTry().equals(member.getMemberTry()))?retObj.getMemberTry():member.getMemberTry());
+			retObj.setAdminTry((retObj.getAdminTry().equals(member.getAdminTry()))?retObj.getAdminTry():member.getAdminTry());
+			retObj.setModDate(LocalDateTime.now());
+			memberRepository.save(retObj);
+		}else {
+			retObj = null;
+		}
+		return retObj;
+	}
+	
+	public MemberEntity InitPasswordById(Long memberIdx) {
+		Optional<MemberEntity> memberEntity = memberRepository.findById(memberIdx);
+		MemberEntity retObj = null;
+		if(memberEntity.isPresent()) {
+			retObj = memberEntity.get();
+			retObj.setPassword(passwordEncoder.encode(retObj.getEmail()));
+			retObj = memberRepository.save(retObj);
+		}else {
+			retObj = null;
+		}
+		return retObj;
+	}
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
@@ -56,19 +110,36 @@ public class MemberService implements UserDetailsService{
 	public void initAdminMember() {
 		MemberEntity member;
 		
-		for (int i = 0; i < 100; i++) {
-			member = new MemberEntity();
-			member.setName("관리자");
-			member.setEmail("seouldnd" + i + "@naver.com");
-			member.setId("admin" + i);
-			member.setPassword(passwordEncoder.encode("AdminP@ssw0rd"));
-			member.setAuth("ROLE_ADMIN");
-			member.setMemberState("NORMAL");
-			member.setRanking(0);
-			member.setCreateDate(LocalDateTime.now());
-			member.setModDate(LocalDateTime.now());
-			
-			memberRepository.save(member);
-		}
+		member = new MemberEntity();
+		member.setName("관리자");
+		member.setEmail("seouldnd1@naver.com");
+		member.setPassword(passwordEncoder.encode(messageSource.getMessage("default.password", null, LocaleContextHolder.getLocale())));
+		member.setAuth("ROLE_ADMIN, ROLE_MEMBER");
+		member.setMemberState("NORMAL");
+		member.setAdminState("NORMAL");
+		member.setRanking(0);
+		member.setCreateDate(LocalDateTime.now());
+		member.setModDate(LocalDateTime.now());
+		member.setMemberTry(0);
+		member.setAdminTry(0);
+		
+		memberRepository.save(member);
+		
+//		for (int i = 2; i < 30; i++) {
+		member = new MemberEntity();
+		member.setName("관리자");
+		member.setEmail("seouldnd2@naver.com");
+		member.setPassword(passwordEncoder.encode(messageSource.getMessage("default.password", null, LocaleContextHolder.getLocale())));
+		member.setAuth("ROLE_ADMIN");
+		member.setMemberState("NORMAL");
+		member.setAdminState("NORMAL");
+		member.setRanking(0);
+		member.setCreateDate(LocalDateTime.now());
+		member.setModDate(LocalDateTime.now());
+		member.setMemberTry(0);
+		member.setAdminTry(0);
+		
+		memberRepository.save(member);
+//		}
 	}
 }
