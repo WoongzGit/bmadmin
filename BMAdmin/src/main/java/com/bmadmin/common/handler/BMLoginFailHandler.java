@@ -56,7 +56,7 @@ public class BMLoginFailHandler implements AuthenticationFailureHandler{
 				member.setAdminState("PWLOCK");
 			}
 			
-			memberService.save(member);
+			memberService.loginTryUp(member);
 		} else if(exception instanceof LockedException) {
 			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.pw.lock", new String[] {cnt}, LocaleContextHolder.getLocale()));
 		} else if(exception instanceof DisabledException) {

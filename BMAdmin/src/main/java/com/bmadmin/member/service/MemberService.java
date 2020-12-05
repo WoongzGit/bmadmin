@@ -10,6 +10,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,23 +45,33 @@ public class MemberService implements UserDetailsService{
 	}
 	
 	public MemberEntity save(MemberEntity member) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
 		member.setAdminTry(0);
-		member.setCreateDate(LocalDateTime.now());
+		member.setRegDate(LocalDateTime.now());
 		member.setMemberTry(0);
 		member.setModDate(LocalDateTime.now());
 		member.setRanking(0);
+		member.setRegAdmin(auth.getName());
+		member.setModAdmin(auth.getName());
 		member.setPassword(passwordEncoder.encode(member.getEmail()));
-		memberRepository.save(member);
-		return member;
+		
+		return memberRepository.save(member);
+	}
+	
+	public MemberEntity loginTryUp(MemberEntity member) {
+		return memberRepository.save(member);
 	}
 	
 	public MemberEntity deleteById(Long id) {
 		Optional<MemberEntity> memberEntity = memberRepository.findById(id);
 		MemberEntity retObj = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(memberEntity.isPresent()) {
 			retObj = memberEntity.get();
 			retObj.setMemberState("BLOCK");
 			retObj.setAdminState("BLOCK");
+			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
 			retObj = memberRepository.save(retObj);
 		}else {
@@ -71,6 +83,7 @@ public class MemberService implements UserDetailsService{
 	public MemberEntity UpdateById(Long memberIdx, MemberEntity member) {
 		Optional<MemberEntity> memberEntity = memberRepository.findById(memberIdx);
 		MemberEntity retObj = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(memberEntity.isPresent()) {
 			retObj = memberEntity.get();
 			retObj.setAuth((retObj.getAuth().equals(member.getAuth()))?retObj.getAuth():member.getAuth());
@@ -78,8 +91,9 @@ public class MemberService implements UserDetailsService{
 			retObj.setAdminState((retObj.getAdminState().equals(member.getAdminState()))?retObj.getAdminState():member.getAdminState());
 			retObj.setMemberTry((retObj.getMemberTry().equals(member.getMemberTry()))?retObj.getMemberTry():member.getMemberTry());
 			retObj.setAdminTry((retObj.getAdminTry().equals(member.getAdminTry()))?retObj.getAdminTry():member.getAdminTry());
+			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
-			memberRepository.save(retObj);
+			retObj = memberRepository.save(retObj);
 		}else {
 			retObj = null;
 		}
@@ -89,9 +103,12 @@ public class MemberService implements UserDetailsService{
 	public MemberEntity InitPasswordById(Long memberIdx) {
 		Optional<MemberEntity> memberEntity = memberRepository.findById(memberIdx);
 		MemberEntity retObj = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(memberEntity.isPresent()) {
 			retObj = memberEntity.get();
 			retObj.setPassword(passwordEncoder.encode(retObj.getEmail()));
+			retObj.setModAdmin(auth.getName());
+			retObj.setModDate(LocalDateTime.now());
 			retObj = memberRepository.save(retObj);
 		}else {
 			retObj = null;
@@ -118,14 +135,15 @@ public class MemberService implements UserDetailsService{
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");
 		member.setRanking(0);
-		member.setCreateDate(LocalDateTime.now());
+		member.setRegDate(LocalDateTime.now());
 		member.setModDate(LocalDateTime.now());
 		member.setMemberTry(0);
 		member.setAdminTry(0);
+		member.setRegAdmin("seouldnd1@naver.com");
+		member.setModAdmin("seouldnd1@naver.com");
 		
 		memberRepository.save(member);
 		
-//		for (int i = 2; i < 30; i++) {
 		member = new MemberEntity();
 		member.setName("관리자");
 		member.setEmail("seouldnd2@naver.com");
@@ -134,10 +152,12 @@ public class MemberService implements UserDetailsService{
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");
 		member.setRanking(0);
-		member.setCreateDate(LocalDateTime.now());
+		member.setRegDate(LocalDateTime.now());
 		member.setModDate(LocalDateTime.now());
 		member.setMemberTry(0);
 		member.setAdminTry(0);
+		member.setRegAdmin("seouldnd1@naver.com");
+		member.setModAdmin("seouldnd1@naver.com");
 		
 		memberRepository.save(member);
 //		}

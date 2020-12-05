@@ -1,9 +1,6 @@
 package com.bmadmin.board.entity;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,70 +8,56 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 @Entity(name="board")
-public class BoardEntity implements UserDetails{
+public class BoardEntity{
+	/* 게시판 순번 */
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "memberIdx", unique = true)
+	@Column(name = "boardIdx", unique = true)
 	private Long memberIdx;
 
-	/* 이름 */
-	@Column(name = "name", nullable=false)
-	private String name;
+	/* 게시판 이름 */
+	@Column(name = "boardName", nullable=false)
+	private String boardName;
 	
-	/* 이메일 */
-	@Column(name = "email", unique = true, nullable=false)
-	private String email;
+	/* 게시판 설명 */
+	@Column(name = "boardDesc", nullable=false)
+	private String boardDesc;
 	
-	/* 아이디 */
-	@Column(name = "id", unique = true, nullable=false)
-	private String id;
-	
-	/* 비밀번호 */
-	@Column(name = "password", nullable=false)
-	private String password;
-	
-	/* 권한 */
-	@Column(name = "auth", nullable=false)
-	private String auth;
-	
-	/* 랭킹 */
-	@Column(name = "ranking", nullable=true)
-	private Integer ranking;
-	
-	/* 등록일자 */
+	/* 게시판 등록일자 */
 	@Column(name = "regDate", nullable=true)
-	private LocalDateTime createDate;
+	private LocalDateTime regDate;
 	
-	/* 수정일자 */
+	/* 게시판 수정일자 */
 	@Column(name = "modDate", nullable=true)
 	private LocalDateTime modDate;
 	
-	/* 계정상태 */
-	@Column(name = "memberState", nullable=false)
-	private String memberState;
+	/* 게시판 등록 관리자 */
+	@Column(name = "regAdmin", nullable=false)
+	private String regAdmin;
+	
+	/* 게시판 수정 관리자 */
+	@Column(name = "modAdmin", nullable=false)
+	private String modAdmin;
+	
+	/* 게시판 상태 */
+	@Column(name = "boardState", nullable=false)
+	private String boardState;
 	
 	public BoardEntity() {
 		
 	}
 	
-	public BoardEntity(Long memberIdx, String name, String email, String id, String password, 
-						String auth, Integer ranking, LocalDateTime createDate,
-						LocalDateTime modDate, String memberState) {
+	public BoardEntity(Long memberIdx, String boardName, LocalDateTime regDate, LocalDateTime modDate,
+						String regAdmin,String modAdmin, String boardState, String boardDesc) {
 		this.memberIdx = memberIdx;
-		this.name = name;
-		this.email = email;
-		this.id = id;
-		this.password = password;
-		this.auth = auth;
-		this.ranking = ranking;
-		this.createDate = createDate;
+		this.boardName = boardName;
+		this.regDate = regDate;
 		this.modDate = modDate;
-		this.memberState = memberState;
+		this.regAdmin = regAdmin;
+		this.modAdmin = modAdmin;
+		this.boardState = boardState;
+		this.boardDesc = boardDesc;
 	}
 
 	public Long getMemberIdx() {
@@ -85,94 +68,20 @@ public class BoardEntity implements UserDetails{
 		this.memberIdx = memberIdx;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getBoardName() {
+		return boardName;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setBoardName(String boardName) {
+		this.boardName = boardName;
 	}
 
-	public String getPassword() {
-		return password;
+	public LocalDateTime getRegDate() {
+		return regDate;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getAuth() {
-		return auth;
-	}
-
-	public void setAuth(String auth) {
-		this.auth = auth;
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<GrantedAuthority> roles = new HashSet<>();
-	    for (String role : auth.split(",")) {
-	      roles.add(new SimpleGrantedAuthority(role));
-	    }
-	    return roles;
-	}
-
-	@Override
-	public String getUsername() {
-		return getEmail();
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public Integer getRanking() {
-		return ranking;
-	}
-
-	public void setRanking(Integer ranking) {
-		this.ranking = ranking;
-	}
-
-	public LocalDateTime getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(LocalDateTime createDate) {
-		this.createDate = createDate;
+	public void setRegDate(LocalDateTime regDate) {
+		this.regDate = regDate;
 	}
 
 	public LocalDateTime getModDate() {
@@ -183,11 +92,35 @@ public class BoardEntity implements UserDetails{
 		this.modDate = modDate;
 	}
 
-	public String getMemberState() {
-		return memberState;
+	public String getRegAdmin() {
+		return regAdmin;
 	}
 
-	public void setMemberState(String memberState) {
-		this.memberState = memberState;
+	public void setRegAdmin(String regAdmin) {
+		this.regAdmin = regAdmin;
+	}
+
+	public String getModAdmin() {
+		return modAdmin;
+	}
+
+	public void setModAdmin(String modAdmin) {
+		this.modAdmin = modAdmin;
+	}
+
+	public String getBoardState() {
+		return boardState;
+	}
+
+	public void setBoardState(String boardState) {
+		this.boardState = boardState;
+	}
+
+	public String getBoardDesc() {
+		return boardDesc;
+	}
+
+	public void setBoardDesc(String boardDesc) {
+		this.boardDesc = boardDesc;
 	}
 }

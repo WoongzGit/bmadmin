@@ -44,7 +44,7 @@ public class MemberEntity implements UserDetails{
 	
 	/* 등록일자 */
 	@Column(name = "regDate", nullable=true)
-	private LocalDateTime createDate;
+	private LocalDateTime regDate;
 	
 	/* 수정일자 */
 	@Column(name = "modDate", nullable=true)
@@ -59,33 +59,43 @@ public class MemberEntity implements UserDetails{
 	private String adminState;
 	
 	/* 회원계정로그인시도횟수 */
-	@Column(name = "memberTry", nullable=true)
+	@Column(name = "memberTry", nullable=false)
 	private Integer memberTry;
 	
 	/* 관리자계정로그인시도횟수 */
-	@Column(name = "adminTry", nullable=true)
+	@Column(name = "adminTry", nullable=false)
 	private Integer adminTry;
+	
+	/* 등록 관리자 */
+	@Column(name = "regAdmin", nullable=false)
+	private String regAdmin;
+	
+	/* 수정 관리자 */
+	@Column(name = "modAdmin", nullable=false)
+	private String modAdmin;
 	
 	public MemberEntity() {
 		
 	}
 	
 	public MemberEntity(Long memberIdx, String name, String email, String password, 
-						String auth, Integer ranking, LocalDateTime createDate,
+						String auth, Integer ranking, LocalDateTime regDate,
 						LocalDateTime modDate, String memberState, String adminState,
-						Integer memberTry, Integer adminTry) {
+						Integer memberTry, Integer adminTry, String regAdmin, String modAdmin) {
 		this.memberIdx = memberIdx;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.auth = auth;
 		this.ranking = ranking;
-		this.createDate = createDate;
+		this.regDate = regDate;
 		this.modDate = modDate;
 		this.memberState = memberState;
 		this.adminState = adminState;
 		this.memberTry = memberTry;
 		this.adminTry = adminTry;
+		this.regAdmin = regAdmin;
+		this.modAdmin = modAdmin;
 	}
 
 	public Long getMemberIdx() {
@@ -178,12 +188,12 @@ public class MemberEntity implements UserDetails{
 		this.ranking = ranking;
 	}
 
-	public LocalDateTime getCreateDate() {
-		return createDate;
+	public LocalDateTime getRegDate() {
+		return regDate;
 	}
 
-	public void setCreateDate(LocalDateTime createDate) {
-		this.createDate = createDate;
+	public void setRegDate(LocalDateTime regDate) {
+		this.regDate = regDate;
 	}
 
 	public LocalDateTime getModDate() {
@@ -224,5 +234,21 @@ public class MemberEntity implements UserDetails{
 
 	public void setAdminTry(Integer adminTry) {
 		this.adminTry = adminTry;
+	}
+
+	public String getRegAdmin() {
+		return regAdmin;
+	}
+
+	public void setRegAdmin(String regAdmin) {
+		this.regAdmin = regAdmin;
+	}
+
+	public String getModAdmin() {
+		return modAdmin;
+	}
+
+	public void setModAdmin(String modAdmin) {
+		this.modAdmin = modAdmin;
 	}
 }

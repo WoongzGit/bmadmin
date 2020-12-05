@@ -33,7 +33,7 @@ public class BMLoginSuccessHandler implements AuthenticationSuccessHandler{
 		
 		member.setAdminTry(0);
 		
-		memberService.save(member);
+		memberService.loginTryUp(member);
 		response.sendRedirect("/admin/member/list.html");
 	}
 }

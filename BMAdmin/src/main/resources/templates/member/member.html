@@ -156,15 +156,27 @@
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanCreateDate1" style="width:105px;">가입일</span>
+								<span class="input-group-text" id="spanRegDate1" style="width:105px;">가입일</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="createDate1" disabled="true" aria-label="가입일" aria-describedby="가입일">
+							<input type="text" class="form-control bmInput" id="regDate1" disabled="true" aria-label="가입일" aria-describedby="가입일">
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanModDate1" style="width:105px;">수정일</span>
+								<span class="input-group-text" id="spanRegAdmin1" style="width:105px;">등록관리자</span>
+							</div>
+							<input type="text" class="form-control bmInput" id="regAdmin1" disabled="true" aria-label="등록관리자" aria-describedby="등록관리자">
+						</div>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="spanmMdDate1" style="width:105px;">수정일</span>
 							</div>
 							<input type="text" class="form-control bmInput" id="modDate1" disabled="true" aria-label="수정일" aria-describedby="수정일">
+						</div>
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="spanModAdmin1" style="width:105px;">수정관리자</span>
+							</div>
+							<input type="text" class="form-control bmInput" id="modAdmin1" disabled="true" aria-label="수정관리자" aria-describedby="수정관리자">
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -180,7 +192,7 @@
 							<div class="input-group-prepend">
 								<span class="input-group-text" id="spanMemberTry1" style="width:105px;">회원횟수</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="memberTry1" aria-label="회원로그인시도횟수" aria-describedby="회원로그인시도횟수" pattern="[0-9]+">
+							<input type="text" class="form-control bmInput" id="memberTry1" aria-label="회원로그인시도횟수" aria-describedby="회원로그인시도횟수">
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -229,6 +241,9 @@
 								<span class="input-group-text" id="spanEmail2" style="width:105px;">회원이메일</span>
 							</div>
 							<input type="text" class="form-control bmInput" id="email2" aria-label="회원이메일" aria-describedby="회원이메일">
+							<div class="input-group-append">
+								<button class="btn btn-outline-warning" type="button" id="goEmailCheck">중복확인</button>
+							</div>
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -347,6 +362,7 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
+			var emailCheck = false;
 			/* 모든 회원의 데이터 조회
 			   page : 페이지 번호
 			   paging : 초기화 여부
@@ -395,7 +411,7 @@
 					html += data.content[i].email + "</span></td>";
 					html += "<td><span class='d-inline-block text-truncate' style='max-width: 80px;' title='" + data.content[i].name + "'>";
 					html += data.content[i].name + "</span></td>";
-					html += "<td>" + data.content[i].createDate.substr(0, 10) + "</td>";
+					html += "<td>" + data.content[i].regDate.substr(0, 10) + "</td>";
 					html += "<td>" + data.content[i].modDate.substr(0, 10) + "</td>";
 					html += "<td>";
 					html += "<button type='button' id='buttonEdit' class='btn btn-info btn-sm'>";
@@ -444,23 +460,20 @@
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
 	   			    	console.log(response);
-	   			    	if(response.status == "200"){
-		 					$("#dialogEdit #memberIdx1").val(data.memberIdx);
-		 					$("#dialogEdit #name1").val(data.name);
-		 					$("#dialogEdit #email1").val(data.email);
-		 					$('#dialogEdit #auth1').find('option[value="' + data.auth + '"]').attr("selected",true);
-		 					$("#dialogEdit #ranking1").val(data.ranking);
-		 					$("#dialogEdit #createDate1").val(data.createDate.substr(0, 10) + " " + data.createDate.substr(11, 8));
-		 					$("#dialogEdit #modDate1").val(data.modDate.substr(0, 10) + " " + data.modDate.substr(11, 8));
-		 					$('#dialogEdit #memberState1').find('option[value="' + data.memberState + '"]').attr("selected",true);
-		 					$('#dialogEdit #adminState1').find('option[value="' + data.adminState + '"]').attr("selected",true);
-		 					$("#dialogEdit #memberTry1").val(data.memberTry);
-		 					$("#dialogEdit #adminTry1").val(data.adminTry);
-	   			    		$('#dialogEdit').modal('show');
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
-	   			    		$('#dialogAlert').modal('show');
-	   			    	}
+	 					$("#dialogEdit #memberIdx1").val(data.memberIdx);
+	 					$("#dialogEdit #name1").val(data.name);
+	 					$("#dialogEdit #email1").val(data.email);
+	 					$('#dialogEdit #auth1').find('option[value="' + data.auth + '"]').attr("selected",true);
+	 					$("#dialogEdit #ranking1").val(data.ranking);
+	 					$("#dialogEdit #regDate1").val(data.regDate.substr(0, 10) + " " + data.regDate.substr(11, 8));
+	 					$("#dialogEdit #regAdmin1").val(data.regAdmin);
+	 					$("#dialogEdit #modDate1").val(data.modDate.substr(0, 10) + " " + data.modDate.substr(11, 8));
+	 					$("#dialogEdit #modAdmin1").val(data.modAdmin);
+	 					$('#dialogEdit #memberState1').find('option[value="' + data.memberState + '"]').attr("selected",true);
+	 					$('#dialogEdit #adminState1').find('option[value="' + data.adminState + '"]').attr("selected",true);
+	 					$("#dialogEdit #memberTry1").val(data.memberTry);
+	 					$("#dialogEdit #adminTry1").val(data.adminTry);
+   			    		$('#dialogEdit').modal('show');
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
@@ -490,13 +503,8 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-	   			    	if(response.status == "200"){
-	   			    		$('#dialogComplete #msg').html("수정됐습니다.");
-	   			    		$('#dialogComplete').modal('show');
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html("수정에 실패했습니다. 개발팀에 문의해주세요.");
-	   			    		$('#dialogAlert').modal('show');
-	   			    	}
+   			    		$('#dialogComplete #msg').html("수정됐습니다.");
+   			    		$('#dialogComplete').modal('show');
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("수정에 실패했습니다. 개발팀에 문의해주세요.");
@@ -517,13 +525,8 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-	   			    	if(response.status == "200"){
-	   			    		$('#dialogComplete #msg').html("비밀번호 초기화됐습니다.");
-	   			    		$('#dialogComplete').modal('show');
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html("비밀번호 초기화에 실패했습니다. 개발팀에 문의해주세요.");
-	   			    		$('#dialogAlert').modal('show');
-	   			    	}
+   			    		$('#dialogComplete #msg').html("비밀번호 초기화됐습니다.");
+   			    		$('#dialogComplete').modal('show');
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("비밀번호 초기화에 실패했습니다. 개발팀에 문의해주세요.");
@@ -533,9 +536,49 @@
 			});
 			
 			/* 회원 등록 버튼 클릭 */
-			$(document).on("click", "#buttonRegister", function(){
+			$("#buttonRegister").on("click", function(){
 				$('#dialogRegister').modal('show');
 			});
+			
+			/* 회원 등록 버튼 onkeyup */
+			$("#email2").on("keyup", function(){
+				emailCheck = false;
+			});
+			
+			/* 등록 dialog에 이메일 중복체크 버튼 클릭 */
+			$('#goEmailCheck').on('click', function(){
+				var _dialog = $("#dialogRegister");
+				
+				$.ajax({
+	   			      url:"/admin/member"
+	   			    , async:true
+	   			    , type:'PUT'
+	   			    , data: {
+						  email:_dialog.find("#email2").val()
+	   			    	, _csrf:$("#csrf").val()
+	   			    }
+	   			    , dataType:'json'
+	   			    , success:function(data, msg, response) {
+	   			    	console.log(data);
+	   			    	console.log(data.resultVo.code);
+	   			    	if(data.resultVo.code != "000"){
+	   			    		$('#dialogAlert #msg').html("존재하는 회원이메일입니다.");
+	 			    		$('#dialogAlert').modal('show');
+	 			    		emailCheck = false;
+	   			    	}else{
+	 			    		$('#dialogComplete #msg').html("등록 가능한 회원이메일입니다.");
+	   			    		$('#dialogComplete').modal('show');
+		   			    	emailCheck = true;
+	   			    	}
+	   			    }
+	   			    , error:function(data, msg, response) {
+	   			    	console.log("error");
+ 			    		$('#dialogAlert #msg').html("이메일 중복체크에 실패했습니다. 개발팀에 문의해주세요.");
+ 			    		$('#dialogAlert').modal('show');
+	   			    }
+				});
+			});
+			
 			
 			/* 등록 dialog에 register 버튼 클릭 */
 			$('#goRegister').on('click', function(){
@@ -559,19 +602,15 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-	   			    	if(response.status == "200"){
-	   			    		$('#dialogComplete #msg').html("등록됐습니다.");
-	   			    		$('#dialogComplete').modal('show');
-	   			    		
-	   			    		getList(1, true);
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html("등록에 실패했습니다. 개발팀에 문의해주세요.");
-	   			    		$('#dialogAlert').modal('show');
-	   			    	}
+	   			    	console.log(response);
+   			    		$('#dialogComplete #msg').html("등록됐습니다.");
+   			    		$('#dialogComplete').modal('show');
+   			    		getList(1, true);
 	   			    }
-	   			    , error:function(e) {
-	   			    	$('#dialogAlert #msg').html("수정에 실패했습니다. 개발팀에 문의해주세요.");
-			    		$('#dialogAlert').modal('show');
+	   			    , error:function(data, msg, response) {
+	   			    	console.log(response);
+   			    		$('#dialogAlert #msg').html("등록에 실패했습니다. 개발팀에 문의해주세요.");
+   			    		$('#dialogAlert').modal('show');
 	   			    }
 				});
 			});
@@ -605,7 +644,6 @@
 					if(_dialog.find("#name2").val() == ""){
 						$('#dialogAlert #msg').html(_dialog.find("#name2").attr("aria-label") + "을 입력해주세요.");
 			    		$('#dialogAlert').modal('show');
-			    		alert("2");
 			    		return false;
 					}else if(_dialog.find("#email2").val() == ""){
 						$('#dialogAlert #msg').html(_dialog.find("#email2").attr("aria-label") + "을 입력해주세요.");
@@ -613,6 +651,10 @@
 			    		return false;
 					}else if(!regExp.test(_dialog.find("#email2").val())){
 						$('#dialogAlert #msg').html(_dialog.find("#email2").attr("aria-label") + "의 형식이 맞지 않습니다.");
+			    		$('#dialogAlert').modal('show');
+			    		return false;
+					}else if(!emailCheck){
+						$('#dialogAlert #msg').html("정상적으로 회원이메일 중복체크를 완료해주세요.");
 			    		$('#dialogAlert').modal('show');
 			    		return false;
 					}else if(_dialog.find("#auth2").val() == ""){
@@ -652,13 +694,8 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-	   			    	if(response.status == "200"){
-	   			    		$('#dialogComplete #msg').html("삭제됐습니다.");
-	   			    		$('#dialogComplete').modal('show');
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html("삭제에 실패했습니다. 개발팀에 문의해주세요.");
-	   			    		$('#dialogAlert').modal('show');
-	   			    	}
+   			    		$('#dialogComplete #msg').html("삭제됐습니다.");
+   			    		$('#dialogComplete').modal('show');
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("삭제에 실패했습니다. 개발팀에 문의해주세요.");
