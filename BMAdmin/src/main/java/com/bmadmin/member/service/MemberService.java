@@ -6,8 +6,6 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
@@ -18,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.bmadmin.common.handler.MessageHandler;
 import com.bmadmin.member.entity.MemberEntity;
 import com.bmadmin.member.repository.MemberRepository;
 
@@ -30,7 +29,7 @@ public class MemberService implements UserDetailsService{
 	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
-    private MessageSource messageSource;
+    private MessageHandler messageHandler;
 	
 	public MemberEntity findByEmail(String memberEmail) {
 		return memberRepository.findByEmail(memberEmail);
@@ -80,7 +79,7 @@ public class MemberService implements UserDetailsService{
 		return retObj;
 	}
 	
-	public MemberEntity UpdateById(Long memberIdx, MemberEntity member) {
+	public MemberEntity updateById(Long memberIdx, MemberEntity member) {
 		Optional<MemberEntity> memberEntity = memberRepository.findById(memberIdx);
 		MemberEntity retObj = null;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -100,7 +99,7 @@ public class MemberService implements UserDetailsService{
 		return retObj;
 	}
 	
-	public MemberEntity InitPasswordById(Long memberIdx) {
+	public MemberEntity initPasswordById(Long memberIdx) {
 		Optional<MemberEntity> memberEntity = memberRepository.findById(memberIdx);
 		MemberEntity retObj = null;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -130,7 +129,7 @@ public class MemberService implements UserDetailsService{
 		member = new MemberEntity();
 		member.setName("관리자");
 		member.setEmail("seouldnd1@naver.com");
-		member.setPassword(passwordEncoder.encode(messageSource.getMessage("default.password", null, LocaleContextHolder.getLocale())));
+		member.setPassword(passwordEncoder.encode(messageHandler.getMessage("default.password")));
 		member.setAuth("ROLE_ADMIN, ROLE_MEMBER");
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");
@@ -147,7 +146,7 @@ public class MemberService implements UserDetailsService{
 		member = new MemberEntity();
 		member.setName("관리자");
 		member.setEmail("seouldnd2@naver.com");
-		member.setPassword(passwordEncoder.encode(messageSource.getMessage("default.password", null, LocaleContextHolder.getLocale())));
+		member.setPassword(passwordEncoder.encode(messageHandler.getMessage("default.password")));
 		member.setAuth("ROLE_ADMIN");
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");

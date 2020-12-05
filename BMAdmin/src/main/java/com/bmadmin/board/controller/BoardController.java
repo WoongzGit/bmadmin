@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bmadmin.board.entity.BoardEntity;
+import com.bmadmin.board.entity.BoardVo;
 import com.bmadmin.board.service.BoardService;
+import com.bmadmin.common.handler.MessageHandler;
 
 @Controller
 public class BoardController {
@@ -27,8 +29,11 @@ public class BoardController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private BoardService boardservice;
+	private BoardService boardService;
 	
+	@Autowired
+	private MessageHandler messageHandler;
+			
 	/*
 	 * 게시판 관리 페이지
 	 */
@@ -44,52 +49,99 @@ public class BoardController {
 	@PostMapping(value="/admin/boards", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Page<BoardEntity>> list (@RequestParam int pageNum, @RequestParam int pageSize) {
 		logger.info("list");
-		return new ResponseEntity<Page<BoardEntity>>(boardservice.findAll(PageRequest.of(pageNum, pageSize)), HttpStatus.OK);
+		return new ResponseEntity<Page<BoardEntity>>(boardService.findAll(PageRequest.of(pageNum, pageSize)), HttpStatus.OK);
 	}
 	
 	/*
 	 * 게시판 상세 검색
 	 */
 	@GetMapping(value="/admin/board/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<BoardEntity> getOne (@PathVariable Long id) {
+	public ResponseEntity<BoardVo> getOne (@PathVariable Long id) {
 		logger.info("getOne");
-		BoardEntity retObj = null;
-		HttpStatus retCode = HttpStatus.OK;
-		Optional<BoardEntity> optionalBoardEntity = boardservice.findById(id);
+		BoardVo retObj = new BoardVo();
+		Optional<BoardEntity> optionalBoardEntity = boardService.findById(id);
 		
 		if(optionalBoardEntity.isPresent()) {
-			retObj = optionalBoardEntity.get();
+			retObj.setBoard(optionalBoardEntity.get());
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
 		}else {
-			retCode = HttpStatus.NO_CONTENT;
+			retObj.setResultVo(messageHandler.getResultVo("result.code.NOT.FOUND.BOARD"));
 		}
 		
-		return new ResponseEntity<BoardEntity>(retObj, retCode);
+		return new ResponseEntity<BoardVo>(retObj, HttpStatus.OK);
+	}
+	
+	/*
+	 * 게시판 신규 등록 전 중복체크
+	 */
+	@PutMapping(value="/admin/board", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<BoardVo> checkOne (BoardEntity board) {
+		logger.info("checkOne");
+		BoardVo retObj = new BoardVo();
+		BoardEntity boardEntity = boardService.findByBoardName(board.getBoardName());
+		if(boardEntity != null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DUPLICATE.BOARDNAME"));
+		}else {
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		
+		return new ResponseEntity<BoardVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 게시판 신규 등록
 	 */
 	@PostMapping(value="/admin/board", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<BoardEntity> insertOne (BoardEntity board) {
+	public ResponseEntity<BoardVo> insertOne (BoardEntity board) {
 		logger.info("insertOne");
-		return new ResponseEntity<BoardEntity>(boardservice.save(board), HttpStatus.OK);
+		BoardVo retObj = new BoardVo();
+		BoardEntity boardEntity = boardService.findByBoardName(board.getBoardName());
+		if(boardEntity != null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DUPLICATE.BOARDNAME"));
+		}else {
+			boardEntity = boardService.save(board);
+			
+			if(boardEntity == null){
+				retObj.setResultVo(messageHandler.getResultVo("result.code.INSERT.FAIL.BOARD"));
+			}else {
+				retObj.setBoard(boardEntity);
+				retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+			}
+		}
+		return new ResponseEntity<BoardVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 게시판 수정
 	 */
 	@PutMapping(value="/admin/board/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<BoardEntity> updateOne (@PathVariable Long id, BoardEntity board) {
+	public ResponseEntity<BoardVo> updateOne (@PathVariable Long id, BoardEntity board) {
 		logger.info("updateOne");
-		return new ResponseEntity<BoardEntity>(boardservice.UpdateById(id, board), HttpStatus.OK);
+		BoardVo retObj = new BoardVo();
+		BoardEntity boardEntity = boardService.updateById(id, board);
+		if(boardEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.UPDATE.FAIL.BOARD"));
+		}else {
+			retObj.setBoard(boardEntity);
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		
+		return new ResponseEntity<BoardVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 게시판 삭제
 	 */
 	@DeleteMapping(value="/admin/board/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<BoardEntity> deleteOne (@PathVariable Long id) {
+	public ResponseEntity<BoardVo> deleteOne (@PathVariable Long id) {
 		logger.info("deleteOne");
-		return new ResponseEntity<BoardEntity>(boardservice.deleteById(id), HttpStatus.OK);
+		BoardVo retObj = new BoardVo();
+		BoardEntity boardEntity = boardService.deleteById(id);
+		if(boardEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DELETE.FAIL.BOARD"));
+		}else {
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		return new ResponseEntity<BoardVo>(retObj, HttpStatus.OK);
 	}
 }

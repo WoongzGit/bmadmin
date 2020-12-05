@@ -14,7 +14,7 @@ public class BoardEntity{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "boardIdx", unique = true)
-	private Long memberIdx;
+	private Long boardIdx;
 
 	/* 게시판 이름 */
 	@Column(name = "boardName", nullable=false)
@@ -48,9 +48,9 @@ public class BoardEntity{
 		
 	}
 	
-	public BoardEntity(Long memberIdx, String boardName, LocalDateTime regDate, LocalDateTime modDate,
+	public BoardEntity(Long boardIdx, String boardName, LocalDateTime regDate, LocalDateTime modDate,
 						String regAdmin,String modAdmin, String boardState, String boardDesc) {
-		this.memberIdx = memberIdx;
+		this.boardIdx = boardIdx;
 		this.boardName = boardName;
 		this.regDate = regDate;
 		this.modDate = modDate;
@@ -60,12 +60,12 @@ public class BoardEntity{
 		this.boardDesc = boardDesc;
 	}
 
-	public Long getMemberIdx() {
-		return memberIdx;
+	public Long getBoardIdx() {
+		return boardIdx;
 	}
 
-	public void setMemberIdx(Long memberIdx) {
-		this.memberIdx = memberIdx;
+	public void setBoardIdx(Long boardIdx) {
+		this.boardIdx = boardIdx;
 	}
 
 	public String getBoardName() {

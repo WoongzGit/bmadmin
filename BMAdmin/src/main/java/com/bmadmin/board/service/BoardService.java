@@ -20,6 +20,10 @@ public class BoardService{
 	@Autowired
 	private BoardRepository boardRepository;
 	
+	public BoardEntity findByBoardName(String boardName) {
+		return boardRepository.findByBoardName(boardName);
+	}
+	
 	public Optional<BoardEntity> findById(Long boardIdx) {
 		return boardRepository.findById(boardIdx);
 	}
@@ -29,14 +33,13 @@ public class BoardService{
 	}
 	
 	public BoardEntity save(BoardEntity board) {
-		LocalDateTime localDateTime = LocalDateTime.now();
-		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		board.setModAdmin(auth.getName());
+		
+		board.setRegDate(LocalDateTime.now());
+		board.setModDate(LocalDateTime.now());
 		board.setRegAdmin(auth.getName());
-		board.setRegDate(localDateTime);
-		board.setModDate(localDateTime);
-		board.setBoardState("NORMAL");
+		board.setModAdmin(auth.getName());
+		
 		return boardRepository.save(board);
 	}
 	
@@ -46,9 +49,8 @@ public class BoardService{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(boardEntity.isPresent()) {
 			retObj = boardEntity.get();
-			retObj.setModDate(LocalDateTime.now());
-			retObj.setBoardState("BLOCK");
 			retObj.setModAdmin(auth.getName());
+			retObj.setModDate(LocalDateTime.now());
 			retObj = boardRepository.save(retObj);
 		}else {
 			retObj = null;
@@ -56,18 +58,18 @@ public class BoardService{
 		return retObj;
 	}
 	
-	public BoardEntity UpdateById(Long boardIdx, BoardEntity board) {
+	public BoardEntity updateById(Long boardIdx, BoardEntity board) {
 		Optional<BoardEntity> boardEntity = boardRepository.findById(boardIdx);
 		BoardEntity retObj = null;
+		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(boardEntity.isPresent()) {
 			retObj = boardEntity.get();
-			retObj.setBoardName((retObj.getBoardName().equals(board.getBoardName()))?retObj.getBoardName():board.getBoardName());
 			retObj.setBoardDesc((retObj.getBoardDesc().equals(board.getBoardDesc()))?retObj.getBoardDesc():board.getBoardDesc());
 			retObj.setBoardState((retObj.getBoardState().equals(board.getBoardState()))?retObj.getBoardState():board.getBoardState());
 			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
-			boardRepository.save(retObj);
+			retObj = boardRepository.save(retObj);
 		}else {
 			retObj = null;
 		}
@@ -75,17 +77,18 @@ public class BoardService{
 	}
 	
 	@PostConstruct
-	public void initAdminMember() {
-		BoardEntity board = new BoardEntity();
-		LocalDateTime localDateTime = LocalDateTime.now();
+	public void initBoard() {
+		BoardEntity board;
 		
-		
-		board.setBoardDesc("테스트 게시판01 설명");
-		board.setBoardName("테스트 게시판01");
-		board.setBoardState("NORMAL");
-		board.setModAdmin("seouldnd1@naver.com");
-		board.setModDate(localDateTime);
+		board = new BoardEntity();
+		board.setBoardName("테스트 게시판 01");
+		board.setBoardDesc("테스트 게시판 01 설명");
+		board.setRegDate(LocalDateTime.now());
+		board.setModDate(LocalDateTime.now());
 		board.setRegAdmin("seouldnd1@naver.com");
-		board.setRegDate(localDateTime);
+		board.setModAdmin("seouldnd1@naver.com");
+		board.setBoardState("NORMAL");
+		
+		boardRepository.save(board);
 	}
 }

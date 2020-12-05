@@ -18,12 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.bmadmin.common.vo.ResultVo;
+import com.bmadmin.common.handler.MessageHandler;
 import com.bmadmin.member.entity.MemberEntity;
 import com.bmadmin.member.entity.MemberVo;
 import com.bmadmin.member.service.MemberService;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @Controller
 public class MemberController {
@@ -33,6 +31,9 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
+	@Autowired
+	private MessageHandler messageHandler;
+			
 	/*
 	 * 회원 관리 페이지
 	 */
@@ -55,16 +56,19 @@ public class MemberController {
 	 * 회원 상세 검색
 	 */
 	@GetMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> getOne (@PathVariable Long id) {
+	public ResponseEntity<MemberVo> getOne (@PathVariable Long id) {
 		logger.info("getOne");
-		MemberEntity retObj = new MemberEntity();
+		MemberVo retObj = new MemberVo();
 		Optional<MemberEntity> optionalMemberEntity = memberService.findById(id);
 		
 		if(optionalMemberEntity.isPresent()) {
-			retObj = optionalMemberEntity.get();
+			retObj.setMember(optionalMemberEntity.get());
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}else {
+			retObj.setResultVo(messageHandler.getResultVo("result.code.NOT.FOUND.MEMBER"));
 		}
 		
-		return new ResponseEntity<MemberEntity>(retObj, HttpStatus.OK);
+		return new ResponseEntity<MemberVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
@@ -73,53 +77,88 @@ public class MemberController {
 	@PutMapping(value="/admin/member", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<MemberVo> checkOne (MemberEntity member) {
 		logger.info("checkOne");
-		MemberVo retVo = new MemberVo();
-		ResultVo resultVo = new ResultVo("OK", "000");
+		MemberVo retObj = new MemberVo();
 		MemberEntity memberEntity = memberService.findByEmail(member.getEmail());
-		logger.info("memberEntity == null : " + (memberEntity == null));
 		if(memberEntity != null){
-			resultVo.setMsg("DUPLICATE");
-			resultVo.setCode("001");
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DUPLICATE.EMAIL"));
+		}else {
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
 		}
 		
-		retVo.setResultVo(resultVo);
-		
-		return new ResponseEntity<MemberVo>(retVo, HttpStatus.OK);
+		return new ResponseEntity<MemberVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 회원 신규 등록
 	 */
 	@PostMapping(value="/admin/member", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> insertOne (MemberEntity member) {
+	public ResponseEntity<MemberVo> insertOne (MemberEntity member) {
 		logger.info("insertOne");
-		return new ResponseEntity<MemberEntity>(memberService.save(member), HttpStatus.OK);
+		MemberVo retObj = new MemberVo();
+		MemberEntity memberEntity = memberService.findByEmail(member.getEmail());
+		if(memberEntity != null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DUPLICATE.EMAIL"));
+		}else {
+			memberEntity = memberService.save(member);
+			
+			if(memberEntity == null){
+				retObj.setResultVo(messageHandler.getResultVo("result.code.INSERT.FAIL.MEMBER"));
+			}else {
+				retObj.setMember(memberEntity);
+				retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+			}
+		}
+		return new ResponseEntity<MemberVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 회원 수정
 	 */
 	@PutMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> updateOne (@PathVariable Long id, MemberEntity member) {
+	public ResponseEntity<MemberVo> updateOne (@PathVariable Long id, MemberEntity member) {
 		logger.info("updateOne");
-		return new ResponseEntity<MemberEntity>(memberService.UpdateById(id, member), HttpStatus.OK);
+		MemberVo retObj = new MemberVo();
+		MemberEntity memberEntity = memberService.updateById(id, member);
+		if(memberEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.UPDATE.FAIL.MEMBER"));
+		}else {
+			retObj.setMember(memberEntity);
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		
+		return new ResponseEntity<MemberVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 회원 삭제
 	 */
 	@DeleteMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> deleteOne (@PathVariable Long id) {
+	public ResponseEntity<MemberVo> deleteOne (@PathVariable Long id) {
 		logger.info("deleteOne");
-		return new ResponseEntity<MemberEntity>(memberService.deleteById(id), HttpStatus.OK);
+		MemberVo retObj = new MemberVo();
+		MemberEntity memberEntity = memberService.deleteById(id);
+		if(memberEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DELETE.FAIL.MEMBER"));
+		}else {
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		return new ResponseEntity<MemberVo>(retObj, HttpStatus.OK);
 	}
 	
 	/*
 	 * 회원 비밀번호 초기화
 	 */
 	@PostMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberEntity> initPassword (@PathVariable Long id) {
+	public ResponseEntity<MemberVo> initPassword (@PathVariable Long id) {
 		logger.info("initPassword");
-		return new ResponseEntity<MemberEntity>(memberService.InitPasswordById(id), HttpStatus.OK);
+		MemberVo retObj = new MemberVo();
+		MemberEntity memberEntity = memberService.initPasswordById(id);
+		if(memberEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.INIT.FAIL.PASSWORD"));
+		}else {
+			retObj.setMember(memberEntity);
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		return new ResponseEntity<MemberVo>(retObj, HttpStatus.OK);
 	}
 }

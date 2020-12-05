@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,19 +32,19 @@ public class BMLoginFailHandler implements AuthenticationFailureHandler{
 	private MemberService memberService;
 	
 	@Autowired
-    private MessageSource messageSource;
+    private MessageHandler messageHandler;
 	
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request,
 			HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException{
 		
 		logger.info("onAuthenticationFailure");
-		String cnt = messageSource.getMessage("pw.try.max.cnt", null, LocaleContextHolder.getLocale());
+		String cnt = messageHandler.getMessage("pw.try.max.cnt");
 		
 		if(exception instanceof AuthenticationServiceException) {
-			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.no.name", null, LocaleContextHolder.getLocale()));
+			request.setAttribute("loginFailMsg", messageHandler.getMessage("msg.no.name"));
 		} else if (exception instanceof BadCredentialsException) {
-			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.not.match", null, LocaleContextHolder.getLocale()));
+			request.setAttribute("loginFailMsg", messageHandler.getMessage("msg.not.match"));
 			
 			MemberEntity member = memberService.findByEmail(request.getParameter("username"));
 			
@@ -58,13 +56,13 @@ public class BMLoginFailHandler implements AuthenticationFailureHandler{
 			
 			memberService.loginTryUp(member);
 		} else if(exception instanceof LockedException) {
-			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.pw.lock", new String[] {cnt}, LocaleContextHolder.getLocale()));
+			request.setAttribute("loginFailMsg", messageHandler.getMessage("msg.pw.lock"));
 		} else if(exception instanceof DisabledException) {
-			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.lock.by.admin", null, LocaleContextHolder.getLocale()));
+			request.setAttribute("loginFailMsg", messageHandler.getMessage("msg.lock.by.admin"));
 		} else if(exception instanceof AccountExpiredException) {
-			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.expired.id", null, LocaleContextHolder.getLocale()));
+			request.setAttribute("loginFailMsg", messageHandler.getMessage("msg.expired.id"));
 		} else if(exception instanceof CredentialsExpiredException) {
-			request.setAttribute("loginFailMsg", messageSource.getMessage("msg.expired.pw", null, LocaleContextHolder.getLocale()));
+			request.setAttribute("loginFailMsg", messageHandler.getMessage("msg.expired.pw"));
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/admin/login");

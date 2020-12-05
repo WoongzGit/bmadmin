@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity(name="member")
 public class MemberEntity implements UserDetails{
+	/* 회원순번 */
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "memberIdx", unique = true)

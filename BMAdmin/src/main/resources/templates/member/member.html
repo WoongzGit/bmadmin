@@ -31,19 +31,19 @@
 					<div class="sidebar-sticky pt-3">
 						<ul class="nav flex-column">
 							<li class="nav-item">
-								<a class="nav-link active" href="#">
+								<a class="nav-link active" href="/admin/member/list.html">
 									<span data-feather="users"></span>
 									사용자 관리
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">
+								<a class="nav-link" href="/admin/board/list.html">
 									<span data-feather="clipboard"></span>
 									게시판 관리
 								</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link" href="#">
+								<a class="nav-link" href="/admin/post/list.html">
 									<span data-feather="file-text"></span>
 									게시물 관리
 								</a>
@@ -83,10 +83,10 @@
 								<div class="table-responsive">
 									<table id="mytable" class="table table-bordred table-striped table-sm">
 										<thead>
-											<th>IDX</th>
+											<th>순번</th>
 											<th>E-MAIL</th>
 											<th>회원이름</th>
-											<th>생성일자</th>
+											<th>가입일자</th>
 											<th>수정일자</th>
 											<th>수정</th>
 											<th>삭제</th>
@@ -119,9 +119,9 @@
 					<div class="modal-body">
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanMemberIdx1" style="width:105px;">회원번호</span>
+								<span class="input-group-text" id="spanMemberIdx1" style="width:105px;">회원순번</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="memberIdx1" disabled="true" aria-label="회원번호" aria-describedby="회원번호">
+							<input type="text" class="form-control bmInput" id="memberIdx1" disabled="true" aria-label="회원순번" aria-describedby="회원순번">
 							<div class="input-group-append">
 								<button class="btn btn-outline-warning" type="button" id="goInitPassword">비밀번호 초기화</button>
 							</div>
@@ -156,9 +156,9 @@
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanRegDate1" style="width:105px;">가입일</span>
+								<span class="input-group-text" id="spanRegDate1" style="width:105px;">가입일자</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="regDate1" disabled="true" aria-label="가입일" aria-describedby="가입일">
+							<input type="text" class="form-control bmInput" id="regDate1" disabled="true" aria-label="가입일자" aria-describedby="가입일자">
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -168,9 +168,9 @@
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanmMdDate1" style="width:105px;">수정일</span>
+								<span class="input-group-text" id="spanmMdDate1" style="width:105px;">수정일자</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="modDate1" disabled="true" aria-label="수정일" aria-describedby="수정일">
+							<input type="text" class="form-control bmInput" id="modDate1" disabled="true" aria-label="수정일자" aria-describedby="수정일자">
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -459,21 +459,27 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-	   			    	console.log(response);
-	 					$("#dialogEdit #memberIdx1").val(data.memberIdx);
-	 					$("#dialogEdit #name1").val(data.name);
-	 					$("#dialogEdit #email1").val(data.email);
-	 					$('#dialogEdit #auth1').find('option[value="' + data.auth + '"]').attr("selected",true);
-	 					$("#dialogEdit #ranking1").val(data.ranking);
-	 					$("#dialogEdit #regDate1").val(data.regDate.substr(0, 10) + " " + data.regDate.substr(11, 8));
-	 					$("#dialogEdit #regAdmin1").val(data.regAdmin);
-	 					$("#dialogEdit #modDate1").val(data.modDate.substr(0, 10) + " " + data.modDate.substr(11, 8));
-	 					$("#dialogEdit #modAdmin1").val(data.modAdmin);
-	 					$('#dialogEdit #memberState1').find('option[value="' + data.memberState + '"]').attr("selected",true);
-	 					$('#dialogEdit #adminState1').find('option[value="' + data.adminState + '"]').attr("selected",true);
-	 					$("#dialogEdit #memberTry1").val(data.memberTry);
-	 					$("#dialogEdit #adminTry1").val(data.adminTry);
-   			    		$('#dialogEdit').modal('show');
+	   			    	console.log(data);
+	   			    	if(data.resultVo.code == "0000"){
+		 					$("#dialogEdit #memberIdx1").val(data.member.memberIdx);
+		 					$("#dialogEdit #name1").val(data.member.name);
+		 					$("#dialogEdit #email1").val(data.member.email);
+		 					$('#dialogEdit #auth1').find('option[value="' + data.member.auth + '"]').attr("selected",true);
+		 					$("#dialogEdit #ranking1").val(data.member.ranking);
+		 					$("#dialogEdit #regDate1").val(data.member.regDate.substr(0, 10) + " " + data.member.regDate.substr(11, 8));
+		 					$("#dialogEdit #regAdmin1").val(data.member.regAdmin);
+		 					$("#dialogEdit #modDate1").val(data.member.modDate.substr(0, 10) + " " + data.member.modDate.substr(11, 8));
+		 					$("#dialogEdit #modAdmin1").val(data.member.modAdmin);
+		 					$('#dialogEdit #memberState1').find('option[value="' + data.member.memberState + '"]').attr("selected",true);
+		 					$('#dialogEdit #adminState1').find('option[value="' + data.member.adminState + '"]').attr("selected",true);
+		 					$("#dialogEdit #memberTry1").val(data.member.memberTry);
+		 					$("#dialogEdit #adminTry1").val(data.member.adminTry);
+	   			    		$('#dialogEdit').modal('show');
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+				    		$('#dialogAlert').modal('show');
+	   			    	}
+	   			    	
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
@@ -503,8 +509,13 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-   			    		$('#dialogComplete #msg').html("수정됐습니다.");
-   			    		$('#dialogComplete').modal('show');
+	   			    	if(data.resultVo.code == "0000"){
+	   			    		$('#dialogComplete #msg').html("수정됐습니다.");
+	   			    		$('#dialogComplete').modal('show');
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+				    		$('#dialogAlert').modal('show');
+	   			    	}
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("수정에 실패했습니다. 개발팀에 문의해주세요.");
@@ -513,7 +524,7 @@
 				});
 			});
 			
-			/* 수정 dialog에 update 버튼 클릭 */
+			/* 수정 dialog에 비밀번호 초기화 버튼 클릭 */
 			$('#goInitPassword').on('click', function(){
 				var _dialog = $("#dialogEdit");
 				$.ajax({
@@ -525,8 +536,13 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-   			    		$('#dialogComplete #msg').html("비밀번호 초기화됐습니다.");
-   			    		$('#dialogComplete').modal('show');
+   			    		if(data.resultVo.code == "0000"){
+   			    			$('#dialogComplete #msg').html("비밀번호 초기화됐습니다.");
+   	   			    		$('#dialogComplete').modal('show');
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+				    		$('#dialogAlert').modal('show');
+	   			    	}
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("비밀번호 초기화에 실패했습니다. 개발팀에 문의해주세요.");
@@ -560,15 +576,14 @@
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
 	   			    	console.log(data);
-	   			    	console.log(data.resultVo.code);
-	   			    	if(data.resultVo.code != "000"){
-	   			    		$('#dialogAlert #msg').html("존재하는 회원이메일입니다.");
-	 			    		$('#dialogAlert').modal('show');
-	 			    		emailCheck = false;
-	   			    	}else{
+	   			    	if(data.resultVo.code == "0000"){
 	 			    		$('#dialogComplete #msg').html("등록 가능한 회원이메일입니다.");
 	   			    		$('#dialogComplete').modal('show');
 		   			    	emailCheck = true;
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+	 			    		$('#dialogAlert').modal('show');
+	 			    		emailCheck = false;
 	   			    	}
 	   			    }
 	   			    , error:function(data, msg, response) {
@@ -603,9 +618,14 @@
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
 	   			    	console.log(response);
-   			    		$('#dialogComplete #msg').html("등록됐습니다.");
-   			    		$('#dialogComplete').modal('show');
-   			    		getList(1, true);
+   			    		if(data.resultVo.code == "0000"){
+   			    			$('#dialogComplete #msg').html("등록됐습니다.");
+   	   			    		$('#dialogComplete').modal('show');
+   	   			    		getList(1, true);
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+	 			    		$('#dialogAlert').modal('show');
+	   			    	}
 	   			    }
 	   			    , error:function(data, msg, response) {
 	   			    	console.log(response);
@@ -678,6 +698,11 @@
 			/* 테이블의 회원 삭제 버튼 클릭
 			*/
 			$(document).on("click", "#buttonDelete", function(){
+				var _tr = $(this).parent().parent();
+				var memberIdx = _tr.find(".bmIdx").text();
+				
+				$('#memberIdx3').val(memberIdx);
+				
 				$('#dialogDelete').modal('show');
 			});
 			
@@ -694,8 +719,13 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-   			    		$('#dialogComplete #msg').html("삭제됐습니다.");
-   			    		$('#dialogComplete').modal('show');
+   			    		if(data.resultVo.code == "0000"){
+   			    			$('#dialogComplete #msg').html("삭제됐습니다.");
+   	   			    		$('#dialogComplete').modal('show');
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+	 			    		$('#dialogAlert').modal('show');
+	   			    	}
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("삭제에 실패했습니다. 개발팀에 문의해주세요.");

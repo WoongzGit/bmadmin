@@ -10,4 +10,6 @@ import com.bmadmin.board.entity.BoardEntity;
 @Repository
 public interface BoardRepository extends JpaRepository<BoardEntity, Long> {
 	Page<BoardEntity> findAll(Pageable pageable);
+	
+	BoardEntity findByBoardName(String boardName);
 }

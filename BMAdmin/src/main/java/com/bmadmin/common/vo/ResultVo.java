@@ -22,7 +22,8 @@ public class ResultVo {
 	}
 	
 	public ResultVo() {
-		
+		this.msg = "OK";
+		this.code = "000";
 	}
 	
 	public ResultVo(String msg, String code) {
