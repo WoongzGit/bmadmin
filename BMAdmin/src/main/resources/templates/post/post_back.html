@@ -59,20 +59,25 @@
 				</nav>
 		
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3" id="spanBoardTitle">
-						<h1 class="h2">게시물 관리</h1>
+					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3">
+						<h1 class="h2">사용자 관리</h1>
+						<div class="btn-toolbar mb-2 mb-md-0">
+							<!-- main 화면 nav -->
+							<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Dropdown button
+  </button>
+  <div id="dropOptions"class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="#">Action</a>
+    <a class="dropdown-item" href="#">Another action</a>
+    <a class="dropdown-item" href="#">Something else here</a>
+  </div>
+</div>
+						</div>
 					</div>
 					
 					<div class="container">
 						<div class="row">
-							<!-- main 화면 nav -->
-							<nav aria-label="...">
-								<ul class="pagination" id="boardNav">
-									<li class="page-item"><span class="page-link"><span data-feather='arrow-left'></span></span></li>
-									<li class="page-item"><a class="page-link" href="#"><span data-feather='arrow-right'></span></a></li>
-								</ul>
-							</nav>
-
 							<!-- main 화면 테이블 -->
 							<div class="col-md-12">
 								<div class="table-responsive">
@@ -229,73 +234,41 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
-			var boardPageNum = 0;
-			var boardEleCnt = 0;
-			var pageSize = 5;
-			var boardNum = 0;
+			
 			var pageInit = function(){
-				// 게시판 리스트 조회
-				getBoardList(true);
-			};
-			
-			/* 모든 게시판의 데이터 조회
-			   isClickFirst : 탭 목록 조회 시 최초 클릭할 탭 설정 (true : 첫번째, false : 마지막 탭)
-			*/
-			var getBoardList = function(isClickFirst){
 				var url = "/admin/boards";
-				var type = "POST";
 				var data = {
-					  pageNum:boardPageNum
-					, pageSize:pageSize
-					, _csrf:$('#csrf').val()
-				}
-				var onParam = {
-					  isClickFirst:isClickFirst
-				}
-				
-				getList(url, type, data, viewBoardList, onParam, false);
-			}
-			
-			/* 모든 게시판의 데이터 조회
-			   boardIdx : 조회할 게시판
-			   pageNum : 조회할 게시판, 게시물의 페이지 번호
-			   pagingInit : 게시물 페이징 초기화 여부 (true : 초기화, false : 초기화하지 않음)
-			*/
-			var getPostList = function(boardIdx, pageNum, pagingInit){
-				var url = "/admin/posts";
-				var type = "POST";
-				var data = {
-					  pageNum:pageNum
-					, pageSize:"10"
-					, _csrf:$('#csrf').val()
-				}
-				var onParam = {
-					  pagingInit:pagingInit
+					  pageSize:"10"
+					, pageNum:"0"
+					, _csrf:$("#csrf").val()
 				};
 				
-				getList(url, type, data, viewPostList, onParam, false);
-			}
+				// 게시판 리스트 조회
+				getList(url, data, viewBoardList);
+			};
 			
-			/* 데이터 조회
+			/* 모든 게시물의 데이터 조회
 			   url : url
-			   type : method 타입
-			   data : 조회 데이터
-			   onSuccess : 성공 시 수행 메소드
-			   onParam : 성공 시 수행할 메소드에 전달할 파라미터
+			   page : 페이지 번호
 			   paging : 초기화 여부
 			*/
-			var getList = function(url, type, data, onSuccess, onParam){
+			var getList = function(url, data, onSuccess){
+				alert("url : " + url + "\ndata : " + JSON.stringify(data) + "\n_csrf : " + $('#csrf').val());
+   				var data = null;
    				$.ajax({
      			      url:url
      			    , async:true
-     			    , type:type
-     			    , data:data
+     			    , type:'POST'
+     			    , data: data
      			    , dataType:'json'
      			    , success:function(e) {
      			    	data = e;
      			    	
-     			    	onSuccess(data, onParam);
+     			    	onSuccess(data);
      			    	
+     			    	if(paging){
+     			    		pagination(data.totalPages);
+     			    	}
      			    	console.log(data);
      			    }
      			    , error:function(e) {
@@ -304,102 +277,46 @@
      			});
    			}
 			
-			/* 게시판 데이터 nav 추가
+			/* 게시판 데이터 dropdown 추가
 			   data : 게시물 데이터
-			   onParam : getList 메소드 성공시 전달하는 파라미터
 			*/
-			var viewBoardList = function(data, onParam){
+			var viewBoardList = function(data){
+				$("#dropOptions").children().remove();
+				
+				console.log("viewBoardList");
 				console.log(data);
-				$("#boardNav").children().remove();
 				
 				var html = "";
-				html += '<li class="page-item"><span class="page-link"><span data-feather="arrow-left"></span></span></li>';
 				
 				for(var i = 0; i < data.numberOfElements; i++){
-					html += '<li class="page-item" data="' + data.content[i].boardIdx + '"><span class="page-link text-truncate" style="max-width:150px;" title="' + data.content[i].boardName + '">' + data.content[i].boardName + '</span></li>';
+					html += '<a class="dropdown-item" data="' + data.content[i].boardIdx + '" href="#">' + data.content[i].boardName + '</a>';
 				}
 				
-				html += '<li class="page-item"><a class="page-link" href="#"><span data-feather="arrow-right"></span></a></li>';
-				
-				$("#boardNav").html(html);
-				
-				feather.replace();
-				
-				boardEleCnt = data.totalElements;
-				
-				if(onParam.isClickFirst){
-					$("#boardNav li:eq(1)").click();
-				}else{
-					$("#boardNav li:eq(" + ($("#boardNav li").length - 2) + ")").click();
-				}
+				$("#dropOptions").html(html);
+   				
+   				feather.replace();
 			}
    			
-			/* 게시판 탭 클릭 메소드 */
-   			$(document).on("click", "#boardNav li", function(){
-   				var _boardNav = $('#boardNav');
-   				var idx = $(this).index();
-   				var activeIdx = _boardNav.find(".active").index();
-   				var liCnt = _boardNav.find('li').length - 1;
-   				var onParam = null;
-   				
-   				if(idx == 0){
-   					// 이전
-   					if(!$(this).hasClass("disabled")){
-	   					if(activeIdx - 1 <= 0){
-	   						if(boardPageNum - 1 >= 0) {
-	   							boardPageNum -= 1;
-	   							
-	   							getBoardList(false);
-	   						}
-	   					}else{
-	   						activeIdx -= 1;
-	   						_boardNav.find('li:eq(' + activeIdx + ')').click();
-	   					}
-   					}
-   				}else if(idx == liCnt){
-   					// 다음
-   					if(!$(this).hasClass("disabled")){
-	   					if(activeIdx + 1 >= liCnt){
-	   						if(boardPageNum + 1 < Math.ceil(boardEleCnt / pageSize)) {
-	   							boardPageNum += 1;
-	   							
-	   							getBoardList(true);
-	   						}
-	   					}else{
-	   						activeIdx += 1;
-	   						_boardNav.find('li:eq(' + activeIdx + ')').click();
-	   					}
-   					}
-   				}else{
-   					_boardNav.find('li').removeClass("active");
-   					$(this).addClass("active");
-   					// 이전 화살표 disable 처리
-   					if(boardPageNum == 0 && idx == 1){
-   						_boardNav.find('li:eq(0)').addClass("disabled");
-   					}else{
-   						_boardNav.find('li:eq(0)').removeClass("disabled");
-   					}
-   					
-   					// 다음 화살표 disable 처리
-   					if(boardEleCnt == (boardPageNum * pageSize + idx)){
-   						_boardNav.find('li:eq(' + (liCnt) + ')').addClass("disabled");
-   					}else{
-   						_boardNav.find('li:eq(' + (liCnt) + ')').removeClass("disabled");
-   					}
-   					
-   					$('#spanBoardTitle h1').text("게시물 관리(" + $(this).text() + ")");
-   					
-   					boardNum = $(this).attr("data");
-   					
-   					getPostList(boardNum, 0, true);
-   				}
-   			});
-			
+			/* 드롭다운 클릭 이벤트 */
+			$(document).on('click', '#dropOptions a', function () {
+				$('#dropdownMenuButton').text($(this).text());
+				
+				var url = "/admin/posts";
+				var data = {
+					  boardIdx:$(this).attr('data')
+					, pageSize:"10"
+					, pageNum:0
+					, _csrf:$("#csrf").val()
+				};
+				
+				// 게시물 리스트 로딩로딩
+				getList(url, data, viewPostList);
+			});
+   			
 			/* 게시물 데이터 테이블 추가
 			   data : 게시물 데이터
-			   onParam : getList 메소드 성공시 전달하는 파라미터
 			*/
-			var viewPostList = function(data, onParam){
+			var viewPostList = function(data){
 				$("#mytable tbody").children().remove();
    				
    				var html = "";
@@ -422,10 +339,6 @@
    				}
    				
    				$("#mytable tbody").html(html);
-
-		    	if(onParam.pagingInit){
-		    		pagination(data.totalPages);
-		    	}
    				
    				feather.replace();
 			};
@@ -441,7 +354,7 @@
 		                console.info(page + ' (from options)');
 		            }
 		        }).on('page', function (event, page) {
-		        	getPostList(boardNum, page, false);
+		        	getList(page, false);
 		            console.info(page + ' (from event listening)');
 		        });
 			};

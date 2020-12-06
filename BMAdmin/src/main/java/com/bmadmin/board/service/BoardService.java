@@ -90,5 +90,18 @@ public class BoardService{
 		board.setBoardState("NORMAL");
 		
 		boardRepository.save(board);
+		
+		for(int i = 2; i < 25; i++) {
+			board = new BoardEntity();
+			board.setBoardName("테스트 게시판 0" + i);
+			board.setBoardDesc("테스트 게시판 0" + i + " 설명");
+			board.setRegDate(LocalDateTime.now());
+			board.setModDate(LocalDateTime.now());
+			board.setRegAdmin("seouldnd1@naver.com");
+			board.setModAdmin("seouldnd1@naver.com");
+			board.setBoardState("NORMAL");
+			
+			boardRepository.save(board);
+		}
 	}
 }

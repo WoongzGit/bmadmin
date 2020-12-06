@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.bmadmin.board.entity.BoardEntity;
 import com.bmadmin.post.entity.PostEntity;
 import com.bmadmin.post.repository.PostRepository;
 
@@ -27,6 +26,10 @@ public class PostService {
 	
 	public Page<PostEntity> findAll(PageRequest pageable) {
 		return postRepository.findAll(pageable);
+	}
+	
+	public Page<PostEntity> findByBoardIdx(PageRequest pageable) {
+		return postRepository.findByBoardIdx(pageable);
 	}
 	
 	public PostEntity updateById(Long postIdx, PostEntity post) {
