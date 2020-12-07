@@ -10,6 +10,7 @@
 		<link href="/admin/css/bootstrap/bootstrap.min.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
 		<link href="/admin/css/dashboard/dashboard.css" rel="stylesheet">
+		<link href="/admin/css/summernote/summernote.min.css" rel="stylesheet">
 	</head>
 	<body>
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -113,21 +114,10 @@
 					<div class="modal-body">
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanBoardName1" style="width:105px;">게시판명</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="boardName1" disabled="true" aria-label="게시판명" aria-describedby="게시판명">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
 								<span class="input-group-text" id="spanPostTitle1" style="width:105px;">게시물명</span>
 							</div>
 							<input type="text" class="form-control bmInput" id="postTitle1" disabled="true" aria-label="게시물명" aria-describedby="게시물명">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanPostIdx1" style="width:105px;">게시물순번</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="postIdx1" disabled="true" aria-label="게시물순번" aria-describedby="게시물순번">
+							<input type="text" class="bmInput" id="postIdx1" disabled="true" aria-label="게시물순번" aria-describedby="게시물순번" style="display:none;">
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -165,13 +155,14 @@
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanPostContent1" style="width:105px;">게시물내용</span>
+								<span class="input-group-text" id="spanPostContents1" style="width:105px;">게시물내용</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="postContent1" disabled="true" aria-label="게시물내용" aria-describedby="게시물내용">
+							<div class="summernote" id="postContents1"></div>
+							<!-- <div id="postContents1"></div> -->
 						</div>
 					</div>
 					<div class="modal-footer ">
-						<button type="button" class="btn btn-warning btn-lg" id="goUpdate"style="width: 100%;" data-dismiss="modal">
+						<button type="button" class="btn btn-warning btn-lg" id="goUpdate"style="width: 100%;">
 							<span class="glyphicon glyphicon-ok-sign">Update</span>
 						</button>
 					</div>
@@ -227,6 +218,7 @@
 	<script src="/admin/js/bootstrap/bootstrap.bundle.min.js"></script>
 	<script src="/admin/js/dashboard/feather.min.js"></script>
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
+	<!-- <script src="/admin/js/summernote/summernote.min.js"></script> -->
 	<script>
 		$(document).ready(function(){
 			var boardPageNum = 0;
@@ -267,6 +259,7 @@
 				var data = {
 					  pageNum:pageNum
 					, pageSize:"10"
+					, boardIdx:boardIdx
 					, _csrf:$('#csrf').val()
 				}
 				var onParam = {
@@ -431,9 +424,17 @@
 			};
 			
 			/* 게시물 데이터 페이징
-			   totalPages : 게시물 데이터 페이징 총 페이지 수
+			   resultPages : 게시물 데이터 페이징 총 페이지 수
 			*/
-			var pagination = function(totalPages){
+			var pagination = function(resultPages){
+				console.log("resultPages : " + resultPages);
+				var totalPages = resultPages;
+				
+				// 게시물이 없는 게시판일 경우 resultPages == 0 이면 pagination 생성 시 에러 발생으로 초기값 1을 설정
+				if(totalPages <= 0){
+					totalPages = 1;
+				}
+				
 				$('#pagination').twbsPagination({
 		            totalPages: totalPages,
 		            visiblePages: 10,
@@ -460,6 +461,9 @@
 	   			    , success:function(data, msg, response) {
 	   			    	console.log(data);
 	   			    	if(data.resultVo.code == "0000"){
+	   			    		// summernote editor init
+	   			    		$('.summernote').summernote("destroy");
+	   			    		
 		 					$("#dialogEdit #boardName1").val(data.post.boardName);
 		 					$("#dialogEdit #postTitle1").val(data.post.postTitle);
 		 					$("#dialogEdit #postIdx1").val(data.post.postIdx);
@@ -468,13 +472,20 @@
 		 					$("#dialogEdit #modDate1").val(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
 		 					$("#dialogEdit #modAdmin1").val(data.post.modAdmin);
 		 					$('#dialogEdit #postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
-		 					$("#dialogEdit #postContent1").val(data.post.postContent);
+		 					$("#dialogEdit #postContents1").summernote('code', data.post.postContents);
+		 					//$("#dialogEdit #postContents1").html("'" + data.post.postContents + "'");
+		 					//$("#dialogEdit #postContents1").html(data.post.postContents);
+		 					//$("#dialogEdit #postContents1").html('<p><img style="width: 16px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAABfSURBVDhPtY9BCoAwDAR9j/8/9tKXaWDbMcRGq2JYwmRhqC5rLY/yVtj6cAoIzSF4sE0TziiINaERpwKl35b0k4bbcvPTZ7h6wScVxP6kFHwWBFOChlNAaJown7+FWnanKPHgmnBY5gAAAABJRU5ErkJggg==" data-filename="favicon.png"><br></p>');
 	   			    		$('#dialogEdit').modal('show');
+	   			    		
+	   			    		// summernote editor init
+		   					$('.summernote').summernote({
+								  height: 1000                // set editor height
+		   					});
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 				    		$('#dialogAlert').modal('show');
 	   			    	}
-	   			    	
 	   			    }
 	   			    , error:function(e) {
 	   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
@@ -486,13 +497,16 @@
 			/* 수정 dialog에 update 버튼 클릭 */
 			$('#goUpdate').on('click', function(){
 				var _dialog = $("#dialogEdit");
+				console.log($('#postContents1').summernote('code'));
 				
 				$.ajax({
 	   			      url:"/admin/post/" + _dialog.find("#postIdx1").val()
 	   			    , async:true
 	   			    , type:'PUT'
 	   			    , data: {
-	   			    	   postState:_dialog.find("#postState1").val()
+	   			    	  postState:_dialog.find("#postState1").val()
+	   			    	, postContents:$('#postContents1').summernote('code')
+	   			    	//, postContents:$('#postContents1').html()
 	   			    	, _csrf:$("#csrf").val()
 	   			    }
 	   			    , dataType:'json'

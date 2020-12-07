@@ -46,9 +46,9 @@ public class PostController {
 	 * 게시물 목록 조회
 	 */
 	@PostMapping(value="/admin/posts", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Page<PostEntity>> list (@RequestParam int pageNum, @RequestParam int pageSize) {
+	public ResponseEntity<Page<PostEntity>> list (@RequestParam int pageNum, @RequestParam int pageSize, PostEntity post) {
 		logger.info("list");
-		return new ResponseEntity<Page<PostEntity>>(postService.findAll(PageRequest.of(pageNum, pageSize)), HttpStatus.OK);
+		return new ResponseEntity<Page<PostEntity>>(postService.findByBoardIdx(PageRequest.of(pageNum, pageSize), post), HttpStatus.OK);
 	}
 	
 	/*
@@ -86,5 +86,45 @@ public class PostController {
 		}
 		
 		return new ResponseEntity<PostVo>(retObj, HttpStatus.OK);
+	}
+	
+	/*
+	 * 게시물 목록 조회
+	 */
+	@GetMapping(value="/test", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Page<PostEntity>> test (@RequestParam int pageNum, @RequestParam int pageSize, PostEntity post) {
+		logger.info("test");
+		
+		logger.info("post.getBoardIdx() : " + post.getBoardIdx());
+//		logger.info("post.getBoardName() : " + post.getBoardName());
+//		logger.info("post.getEmail() : " + post.getEmail());
+//		logger.info("post.getMemberIdx() : " + post.getMemberIdx());
+//		logger.info("post.getModAdmin() : " + post.getModAdmin());
+//		logger.info("post.getModDate() : " + post.getModDate());
+//		logger.info("post.getPostContent() : " + post.getPostContent());
+//		logger.info("post.getPostIdx() : " + post.getPostIdx());
+//		logger.info("post.getPostState() : " + post.getPostState());
+//		logger.info("post.getPostTitle() : " + post.getPostTitle());
+//		logger.info("post.getRegDate() : " + post.getRegDate());
+		
+		Page<PostEntity> returnObj = postService.findByBoardIdx(PageRequest.of(pageNum, pageSize), post);
+		
+		for(PostEntity postEntity : returnObj) {
+			logger.info("=========================================================");
+			logger.info("postEntity.getBoardIdx() : " + postEntity.getBoardIdx());
+			logger.info("postEntity.getBoardName() : " + postEntity.getBoardName());
+			logger.info("postEntity.getEmail() : " + postEntity.getEmail());
+			logger.info("postEntity.getMemberIdx() : " + postEntity.getMemberIdx());
+			logger.info("postEntity.getModAdmin() : " + postEntity.getModAdmin());
+			logger.info("postEntity.getModDate() : " + postEntity.getModDate());
+			logger.info("postEntity.getPostContent() : " + postEntity.getPostContents());
+			logger.info("postEntity.getPostIdx() : " + postEntity.getPostIdx());
+			logger.info("postEntity.getPostState() : " + postEntity.getPostState());
+			logger.info("postEntity.getPostTitle() : " + postEntity.getPostTitle());
+			logger.info("postEntity.getRegDate() : " + postEntity.getRegDate());
+		}
+		
+
+		return new ResponseEntity<Page<PostEntity>>(postService.findByBoardIdx(PageRequest.of(pageNum, pageSize), post), HttpStatus.OK);
 	}
 }

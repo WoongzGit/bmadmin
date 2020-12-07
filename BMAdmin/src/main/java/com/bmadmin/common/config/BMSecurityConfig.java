@@ -35,7 +35,7 @@ public class BMSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/admin/css/**", "/admin/js/**", "/admin/vender/**", "/admin/js/**", "/admin/images/**", "/*.ico");
+		web.ignoring().antMatchers("/admin/css/**", "/admin/js/**", "/admin/vender/**", "/admin/js/**", "/admin/images/**", "/*.ico", "/test/**");
 	}
 	
 	@Override

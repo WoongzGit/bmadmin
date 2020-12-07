@@ -1,12 +1,13 @@
 package com.bmadmin.common.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
-public class MessageConfig {
+public class MessageConfig{
 	
 	@Bean
 	public ReloadableResourceBundleMessageSource messageSource() {
@@ -22,5 +23,17 @@ public class MessageConfig {
 	@Bean
 	public SessionLocaleResolver localeResolver() {
 		return new SessionLocaleResolver();
+	}
+	
+//	@Override
+//	public void addInterceptors(InterceptorRegistry registry) {
+//	    registry.addInterceptor(new HtmlInterceptor());
+//	}
+	
+	@Bean
+	public FilterRegistrationBean getFilterRegistrationBean() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean(new HtmlTagFilter());
+				
+		return registrationBean;
 	}
 }

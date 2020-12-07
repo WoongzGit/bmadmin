@@ -37,8 +37,8 @@ public class PostEntity {
 	private String email;
 	
 	/* 게시글 */
-	@Column(name = "postContent", nullable=false)
-	private String postContent;
+	@Column(name = "postContents", nullable=false)
+	private String postContents;
 	
 	/* 등록일자 */
 	@Column(name = "regDate", nullable=true)
@@ -60,14 +60,14 @@ public class PostEntity {
 		
 	}
 	
-	public PostEntity(Long postIdx, Long boardIdx, String boardName, Long memberIdx, String email, String postContent,
+	public PostEntity(Long postIdx, Long boardIdx, String boardName, Long memberIdx, String email, String postContents,
 						LocalDateTime regDate, LocalDateTime modDate, String postState, String postTitle, String modAdmin) {
 		this.postIdx = postIdx;
 		this.boardIdx = boardIdx;
 		this.boardName = boardName;
 		this.memberIdx = memberIdx;
 		this.email = email;
-		this.postContent = postContent;
+		this.postContents = postContents;
 		this.regDate = regDate;
 		this.modDate = modDate;
 		this.postState = postState;
@@ -115,12 +115,12 @@ public class PostEntity {
 		this.email = email;
 	}
 
-	public String getPostContent() {
-		return postContent;
+	public String getPostContents() {
+		return postContents;
 	}
 
-	public void setPostContent(String postContent) {
-		this.postContent = postContent;
+	public void setPostContents(String postContents) {
+		this.postContents = postContents;
 	}
 
 	public LocalDateTime getRegDate() {

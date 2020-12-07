@@ -28,8 +28,8 @@ public class PostService {
 		return postRepository.findAll(pageable);
 	}
 	
-	public Page<PostEntity> findByBoardIdx(PageRequest pageable) {
-		return postRepository.findByBoardIdx(pageable);
+	public Page<PostEntity> findByBoardIdx(PageRequest pageable, PostEntity post) {
+		return postRepository.findByBoardIdx(pageable, post.getBoardIdx());
 	}
 	
 	public PostEntity updateById(Long postIdx, PostEntity post) {
@@ -40,6 +40,7 @@ public class PostService {
 		if(postEntity.isPresent()) {
 			retObj = postEntity.get();
 			retObj.setPostState((retObj.getPostState().equals(post.getPostState()))?retObj.getPostState():post.getPostState());
+			retObj.setPostContents((retObj.getPostContents().equals(post.getPostContents()))?retObj.getPostContents():post.getPostContents());
 			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
 			retObj = postRepository.save(retObj);
@@ -61,7 +62,7 @@ public class PostService {
 		post.setBoardName("테스트 게시판 01");
 		post.setMemberIdx((long) 1);
 		post.setEmail("seouldnd1@naver.com");
-		post.setPostContent("테스트중인 게시물임다.");
+		post.setPostContents("테스트중인 게시물임다.");
 		post.setRegDate(localDateTime);
 		post.setModDate(localDateTime);
 		post.setPostState("NORMAL");
