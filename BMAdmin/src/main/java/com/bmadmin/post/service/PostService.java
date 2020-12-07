@@ -40,7 +40,6 @@ public class PostService {
 		if(postEntity.isPresent()) {
 			retObj = postEntity.get();
 			retObj.setPostState((retObj.getPostState().equals(post.getPostState()))?retObj.getPostState():post.getPostState());
-			retObj.setPostContents((retObj.getPostContents().equals(post.getPostContents()))?retObj.getPostContents():post.getPostContents());
 			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
 			retObj = postRepository.save(retObj);

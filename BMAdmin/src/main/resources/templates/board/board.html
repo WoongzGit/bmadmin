@@ -129,11 +129,13 @@
 							</div>
 							<input type="text" class="form-control bmInput" id="boardName1" disabled="true" aria-label="게시판명" aria-describedby="게시판명">
 						</div>
-						<div class="input-group mb-3">
+						<div class="input-group">
 							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanBoardDesc1" style="width:105px;">게시판설명</span>
+								<span class="input-group-text">게시판설명</span>
 							</div>
-							<input type="text" class="form-control bmInput" id="boardDesc1" disabled="true" aria-label="게시판설명" aria-describedby="게시판설명">
+						</div>
+						<div class="input-group">
+							<textarea class="form-control" id="boardDesc1" rows="5" aria-label="With textarea"></textarea>
 						</div>
 						<div class="input-group mb-3">
 							<div class="input-group-prepend">
@@ -170,7 +172,7 @@
 						</div>
 					</div>
 					<div class="modal-footer ">
-						<button type="button" class="btn btn-warning btn-lg" id="goUpdate"style="width: 100%;" data-dismiss="modal">
+						<button type="button" class="btn btn-warning btn-lg" id="goUpdate"style="width: 100%;">
 							<span class="glyphicon glyphicon-ok-sign">Update</span>
 						</button>
 					</div>
@@ -214,7 +216,7 @@
 						</div>
 					</div>
 					<div class="modal-footer ">
-						<button type="button" class="btn btn-warning btn-lg" id="goRegister"style="width: 100%;" data-dismiss="modal">
+						<button type="button" class="btn btn-warning btn-lg" id="goRegister"style="width: 100%;">
 							<span class="glyphicon glyphicon-ok-sign">Register</span>
 						</button>
 					</div>
@@ -237,7 +239,7 @@
 						</div>
 					</div>
 					<div class="modal-footer ">
-						<button type="button" class="btn btn-success" id="goDelete" data-dismiss="modal">
+						<button type="button" class="btn btn-danger" id="goDelete">
 							<input type="hidden" class="bmInput" id="boardIdx3"/>
 							<span class="glyphicon glyphicon-ok-sign">Yes</span>
 						</button>
@@ -439,6 +441,7 @@
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
 	   			    	if(data.resultVo.code == "0000"){
+	   			    		_dialog.modal('hide');
 	   			    		$('#dialogComplete #msg').html("수정됐습니다.");
 	   			    		$('#dialogComplete').modal('show');
 	   			    	}else{
@@ -519,6 +522,7 @@
 	   			    , success:function(data, msg, response) {
 	   			    	console.log(response);
    			    		if(data.resultVo.code == "0000"){
+   			    			_dialog.modal('hide');
    			    			$('#dialogComplete #msg').html("등록됐습니다.");
    	   			    		$('#dialogComplete').modal('show');
    	   			    		getList(1, true);
@@ -588,6 +592,7 @@
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
    			    		if(data.resultVo.code == "0000"){
+   			    			_dialog.modal('hide');
    			    			$('#dialogComplete #msg').html("삭제됐습니다.");
    	   			    		$('#dialogComplete').modal('show');
 	   			    	}else{

@@ -8,6 +8,8 @@ body {
   vertical-align: text-bottom;
 }
 
+textarea { resize: none; }
+
 /*
  * Sidebar
  */

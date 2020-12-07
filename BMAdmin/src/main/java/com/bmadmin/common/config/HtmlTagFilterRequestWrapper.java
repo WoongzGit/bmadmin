@@ -33,9 +33,6 @@ public class HtmlTagFilterRequestWrapper extends HttpServletRequestWrapper {
 					case '\'' :
 						strBuff.append("&apos;");
 						break;
-					case '\n' :
-						strBuff.append("&lt;br&gt;");
-						break;
 					default:
 						strBuff.append(c);
 						break;
@@ -77,7 +74,7 @@ public class HtmlTagFilterRequestWrapper extends HttpServletRequestWrapper {
 				break;
 			case '\'':
 				strBuff.append("&apos;");
-				break;	
+				break;
 			default:
 				strBuff.append(c);
 				break;

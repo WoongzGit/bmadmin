@@ -10,7 +10,6 @@
 		<link href="/admin/css/bootstrap/bootstrap.min.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
 		<link href="/admin/css/dashboard/dashboard.css" rel="stylesheet">
-		<link href="/admin/css/summernote/summernote.min.css" rel="stylesheet">
 	</head>
 	<body>
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -149,16 +148,19 @@
 							</div>
 							<select class="custom-select bmInput" id="postState1">
 								<option value="NORMAL">정상</option>
-								<option value="ADMIN_DELETE">관리자 삭제</option>
-								<option value="MEMBER_DELETE">작성자 삭제</option>
+								<option value="BLOCK">관리자 삭제</option>
+								<option value="DELETE">작성자 삭제</option>
 							</select>
 						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanPostContents1" style="width:105px;">게시물내용</span>
+						<div class="row">
+							<div class="col-sm">
+								<span class="input-group-text">게시물내용</span>
 							</div>
-							<div class="summernote" id="postContents1"></div>
-							<!-- <div id="postContents1"></div> -->
+						</div>
+						<div class="row">
+							<div class="col-sm">
+								<span class="input-group-text"><div id="postContents1"></div></span>
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer ">
@@ -212,13 +214,35 @@
 			</div>
 		</div>
 		
+		<div class="modal fade" id="dialogComments" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<h4 class="modal-title custom_align" id="Heading">댓글 관리</h4>
+					</div>
+					<div class="modal-body">
+						<div class="input-group mb-3">
+							<div class="input-group-prepend">
+								<span class="input-group-text" id="spanCommentIdx" style="width:200px;">작성자 이메일</span>
+							</div>
+							<button type='button' id='buttonEdit' class='btn btn-info btn-sm'><span data-feather='edit'></span></button>
+							<button type='button' id='buttonEdit' class='btn btn-info btn-sm'><span data-feather='edit'></span></button>
+							<input type="text" class="form-control bmInput" id="commentIdx" disabled="true" readonly="readonly" aria-label="게시물명" aria-describedby="게시물명">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 	</body>
 	<script src="/admin/js/jquery/jquery.min.js"></script>
 	<script src="/admin/js/bootstrap/bootstrap.bundle.min.js"></script>
 	<script src="/admin/js/dashboard/feather.min.js"></script>
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
-	<!-- <script src="/admin/js/summernote/summernote.min.js"></script> -->
 	<script>
 		$(document).ready(function(){
 			var boardPageNum = 0;
@@ -449,6 +473,8 @@
 			
 			/* 테이블의 게시물 수정 버튼 클릭 */
 			$(document).on("click", "#buttonEdit", function(){
+				$('#dialogComments').modal('show');
+				return false;
 				var _tr = $(this).parent().parent();
 				var postIdx = _tr.find(".bmIdx").text();
 				$.ajax({
@@ -461,9 +487,6 @@
 	   			    , success:function(data, msg, response) {
 	   			    	console.log(data);
 	   			    	if(data.resultVo.code == "0000"){
-	   			    		// summernote editor init
-	   			    		$('.summernote').summernote("destroy");
-	   			    		
 		 					$("#dialogEdit #boardName1").val(data.post.boardName);
 		 					$("#dialogEdit #postTitle1").val(data.post.postTitle);
 		 					$("#dialogEdit #postIdx1").val(data.post.postIdx);
@@ -472,16 +495,8 @@
 		 					$("#dialogEdit #modDate1").val(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
 		 					$("#dialogEdit #modAdmin1").val(data.post.modAdmin);
 		 					$('#dialogEdit #postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
-		 					$("#dialogEdit #postContents1").summernote('code', data.post.postContents);
-		 					//$("#dialogEdit #postContents1").html("'" + data.post.postContents + "'");
-		 					//$("#dialogEdit #postContents1").html(data.post.postContents);
-		 					//$("#dialogEdit #postContents1").html('<p><img style="width: 16px;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAABfSURBVDhPtY9BCoAwDAR9j/8/9tKXaWDbMcRGq2JYwmRhqC5rLY/yVtj6cAoIzSF4sE0TziiINaERpwKl35b0k4bbcvPTZ7h6wScVxP6kFHwWBFOChlNAaJown7+FWnanKPHgmnBY5gAAAABJRU5ErkJggg==" data-filename="favicon.png"><br></p>');
+		 					$("#dialogEdit #postContents1").html(data.post.postContents);
 	   			    		$('#dialogEdit').modal('show');
-	   			    		
-	   			    		// summernote editor init
-		   					$('.summernote').summernote({
-								  height: 1000                // set editor height
-		   					});
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 				    		$('#dialogAlert').modal('show');
@@ -497,7 +512,6 @@
 			/* 수정 dialog에 update 버튼 클릭 */
 			$('#goUpdate').on('click', function(){
 				var _dialog = $("#dialogEdit");
-				console.log($('#postContents1').summernote('code'));
 				
 				$.ajax({
 	   			      url:"/admin/post/" + _dialog.find("#postIdx1").val()
@@ -505,8 +519,6 @@
 	   			    , type:'PUT'
 	   			    , data: {
 	   			    	  postState:_dialog.find("#postState1").val()
-	   			    	, postContents:$('#postContents1').summernote('code')
-	   			    	//, postContents:$('#postContents1').html()
 	   			    	, _csrf:$("#csrf").val()
 	   			    }
 	   			    , dataType:'json'

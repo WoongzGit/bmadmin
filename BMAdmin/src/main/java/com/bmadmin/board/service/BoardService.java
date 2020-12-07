@@ -50,6 +50,7 @@ public class BoardService{
 		if(boardEntity.isPresent()) {
 			retObj = boardEntity.get();
 			retObj.setModAdmin(auth.getName());
+			retObj.setBoardState("BLOCK");
 			retObj.setModDate(LocalDateTime.now());
 			retObj = boardRepository.save(retObj);
 		}else {
