@@ -133,7 +133,7 @@ public class MemberService implements UserDetailsService{
 		member.setAuth("ROLE_ADMIN, ROLE_MEMBER");
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");
-		member.setRanking(0);
+		member.setRanking(1);
 		member.setRegDate(LocalDateTime.now());
 		member.setModDate(LocalDateTime.now());
 		member.setMemberTry(0);
@@ -150,7 +150,7 @@ public class MemberService implements UserDetailsService{
 		member.setAuth("ROLE_ADMIN");
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");
-		member.setRanking(0);
+		member.setRanking(1);
 		member.setRegDate(LocalDateTime.now());
 		member.setModDate(LocalDateTime.now());
 		member.setMemberTry(0);

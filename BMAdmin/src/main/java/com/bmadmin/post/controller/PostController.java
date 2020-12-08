@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,10 +37,36 @@ public class PostController {
 	/*
 	 * 게시물 관리 페이지
 	 */
-	@GetMapping(value="/admin/post/list.html")
-	public String index () {
+	@PostMapping(value="/admin/post/list.html")
+	public String index (@RequestParam int boardPageNum, @RequestParam int boardPageSize,
+			@RequestParam int postPageNum, @RequestParam int postPageSize,
+			PostEntity post, Model model) {
 		logger.info("index");
+		model.addAttribute("boardPageNum", boardPageNum);
+		model.addAttribute("boardPageSize", boardPageSize);
+		model.addAttribute("postPageNum", postPageNum);
+		model.addAttribute("postPageSize", postPageSize);
+		model.addAttribute("boardIdx", post.getBoardIdx());
+		model.addAttribute("postIdx", post.getPostIdx());
 		return "post/post";
+	}
+	
+	/*
+	 * 게시물 상세 페이지
+	 */
+	@PostMapping(value="/admin/post/view.html")
+	public String view (@RequestParam int boardPageNum, @RequestParam int boardPageSize,
+						@RequestParam int postPageNum, @RequestParam int postPageSize,
+						PostEntity post, Model model) {
+		logger.info("view");
+		model.addAttribute("boardPageNum", boardPageNum);
+		model.addAttribute("boardPageSize", boardPageSize);
+		model.addAttribute("postPageNum", postPageNum);
+		model.addAttribute("postPageSize", postPageSize);
+		model.addAttribute("boardIdx", post.getBoardIdx());
+		model.addAttribute("postIdx", post.getPostIdx());
+
+		return "post/view";
 	}
 	
 	/*
@@ -86,45 +113,5 @@ public class PostController {
 		}
 		
 		return new ResponseEntity<PostVo>(retObj, HttpStatus.OK);
-	}
-	
-	/*
-	 * 게시물 목록 조회
-	 */
-	@GetMapping(value="/test", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Page<PostEntity>> test (@RequestParam int pageNum, @RequestParam int pageSize, PostEntity post) {
-		logger.info("test");
-		
-		logger.info("post.getBoardIdx() : " + post.getBoardIdx());
-//		logger.info("post.getBoardName() : " + post.getBoardName());
-//		logger.info("post.getEmail() : " + post.getEmail());
-//		logger.info("post.getMemberIdx() : " + post.getMemberIdx());
-//		logger.info("post.getModAdmin() : " + post.getModAdmin());
-//		logger.info("post.getModDate() : " + post.getModDate());
-//		logger.info("post.getPostContent() : " + post.getPostContent());
-//		logger.info("post.getPostIdx() : " + post.getPostIdx());
-//		logger.info("post.getPostState() : " + post.getPostState());
-//		logger.info("post.getPostTitle() : " + post.getPostTitle());
-//		logger.info("post.getRegDate() : " + post.getRegDate());
-		
-		Page<PostEntity> returnObj = postService.findByBoardIdx(PageRequest.of(pageNum, pageSize), post);
-		
-		for(PostEntity postEntity : returnObj) {
-			logger.info("=========================================================");
-			logger.info("postEntity.getBoardIdx() : " + postEntity.getBoardIdx());
-			logger.info("postEntity.getBoardName() : " + postEntity.getBoardName());
-			logger.info("postEntity.getEmail() : " + postEntity.getEmail());
-			logger.info("postEntity.getMemberIdx() : " + postEntity.getMemberIdx());
-			logger.info("postEntity.getModAdmin() : " + postEntity.getModAdmin());
-			logger.info("postEntity.getModDate() : " + postEntity.getModDate());
-			logger.info("postEntity.getPostContent() : " + postEntity.getPostContents());
-			logger.info("postEntity.getPostIdx() : " + postEntity.getPostIdx());
-			logger.info("postEntity.getPostState() : " + postEntity.getPostState());
-			logger.info("postEntity.getPostTitle() : " + postEntity.getPostTitle());
-			logger.info("postEntity.getRegDate() : " + postEntity.getRegDate());
-		}
-		
-
-		return new ResponseEntity<Page<PostEntity>>(postService.findByBoardIdx(PageRequest.of(pageNum, pageSize), post), HttpStatus.OK);
 	}
 }

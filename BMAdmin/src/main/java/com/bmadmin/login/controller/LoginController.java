@@ -10,6 +10,9 @@ public class LoginController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	/*
+	 * 로그인 페이지
+	 */
 	@RequestMapping(value= {"", "admin/", "admin", "admin/login", "admin/login/", "admin/login/login.html"})
 	public String index () {
 		logger.info("index");

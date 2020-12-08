@@ -2,11 +2,17 @@ package com.bmadmin.post.entity;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.bmadmin.board.entity.BoardEntity;
+import com.bmadmin.member.entity.MemberEntity;
 
 @Entity(name="post")
 public class PostEntity {
@@ -24,17 +30,19 @@ public class PostEntity {
 	@Column(name = "boardIdx", nullable=false)
 	private Long boardIdx;
 	
-	/* 게시판명 */
-	@Column(name = "boardName", nullable=false)
-	private String boardName;
+	/* 회원엔티티 */
+	@ManyToOne(cascade={CascadeType.REFRESH})
+	@JoinColumn(name="boardIdx", insertable = false, updatable = false)
+	private BoardEntity boardEntity;
 	
 	/* 회원순번 */
 	@Column(name = "memberIdx", nullable=false)
 	private Long memberIdx;
 	
-	/* 이메일 */
-	@Column(name = "email", nullable=false)
-	private String email;
+	/* 회원엔티티 */
+	@ManyToOne(cascade={CascadeType.REFRESH})
+	@JoinColumn(name="memberIdx", insertable = false, updatable = false)
+	private MemberEntity memberEntity;
 	
 	/* 게시글 */
 	@Column(name = "postContents", nullable=false)
@@ -56,23 +64,27 @@ public class PostEntity {
 	@Column(name = "postState", nullable=false)
 	private String postState;
 	
+	/* 게시물 조회수 */
+	@Column(name = "postCnt", nullable=false)
+	private Integer postCnt;
+	
 	public PostEntity() {
 		
 	}
 	
-	public PostEntity(Long postIdx, Long boardIdx, String boardName, Long memberIdx, String email, String postContents,
-						LocalDateTime regDate, LocalDateTime modDate, String postState, String postTitle, String modAdmin) {
+	public PostEntity(Long postIdx, Long boardIdx, Long memberIdx, String postContents,
+						LocalDateTime regDate, LocalDateTime modDate, String postState, String postTitle, String modAdmin,
+						Integer postCnt) {
 		this.postIdx = postIdx;
 		this.boardIdx = boardIdx;
-		this.boardName = boardName;
 		this.memberIdx = memberIdx;
-		this.email = email;
 		this.postContents = postContents;
 		this.regDate = regDate;
 		this.modDate = modDate;
 		this.postState = postState;
 		this.postTitle = postTitle;
 		this.modAdmin = modAdmin;
+		this.postCnt = postCnt;
 	}
 
 	public Long getPostIdx() {
@@ -91,28 +103,12 @@ public class PostEntity {
 		this.boardIdx = boardIdx;
 	}
 
-	public String getBoardName() {
-		return boardName;
-	}
-
-	public void setBoardName(String boardName) {
-		this.boardName = boardName;
-	}
-
 	public Long getMemberIdx() {
 		return memberIdx;
 	}
 
 	public void setMemberIdx(Long memberIdx) {
 		this.memberIdx = memberIdx;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getPostContents() {
@@ -161,5 +157,29 @@ public class PostEntity {
 
 	public void setModAdmin(String modAdmin) {
 		this.modAdmin = modAdmin;
+	}
+
+	public Integer getPostCnt() {
+		return postCnt;
+	}
+
+	public void setPostCnt(Integer postCnt) {
+		this.postCnt = postCnt;
+	}
+
+	public BoardEntity getBoardEntity() {
+		return boardEntity;
+	}
+
+	public void setBoardEntity(BoardEntity boardEntity) {
+		this.boardEntity = boardEntity;
+	}
+
+	public MemberEntity getMemberEntity() {
+		return memberEntity;
+	}
+
+	public void setMemberEntity(MemberEntity memberEntity) {
+		this.memberEntity = memberEntity;
 	}
 }

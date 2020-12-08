@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="generator" content="Jekyll v4.1.1">
+		<title>BMBoard Admin</title>
+		<link href="/admin/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link href="/admin/css/dashboard/dashboard.css" rel="stylesheet">
+	</head>
+	<body>
+		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">BMBoard Admin</a>
+			<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
+			<ul class="navbar-nav px-3">
+				<li class="nav-item text-nowrap">
+					<a class="nav-link" href="/admin/logout">Log out</a>
+				</li>
+			</ul>
+		</nav>
+
+		<div class="container container-fluid">
+			<div class="row">
+				<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+					<div class="sidebar-sticky pt-3">
+						<ul class="nav flex-column">
+							<li class="nav-item">
+								<a class="nav-link" href="/admin/member/list.html">
+									<span data-feather="users"></span>
+									사용자 관리
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="/admin/board/list.html">
+									<span data-feather="clipboard"></span>
+									게시판 관리
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link active" href="/admin/post/list.html">
+									<span data-feather="file-text"></span>
+									게시물 관리
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">
+									<span data-feather="trending-up"></span>
+									통계 데이터
+								</a>
+							</li>
+						</ul>
+					</div>
+				</nav>
+				
+				
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+					<nav aria-label="breadcrumb" class="mt-3 mb-5">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#">test</a></li>
+							<li class="breadcrumb-item"><a href="#">asdf</a></li>
+							<li class="breadcrumb-item active" aria-current="page">Data</li>
+						</ol>
+					</nav>
+					<div class="container">
+						<div class="row">
+							<div class="col-8">
+								<p class="text-justify mt-3" id="postTitle1"></p>
+							</div>
+							<div class="col-4">
+								<p class="text-right mt-3" id="regDate1"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-8 border-top" id="email1"></div>
+							<div class="col-4 border-top">
+								<p class="text-right mt-3" id="postCnt1"></p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12 border-top">
+								<p class="text-justify mt-5 mb-5" id="postContents1"></p>
+							</div>
+						</div>
+						<div class="row" id="commentList">
+						</div>
+						<div class="row">
+							<div class="col-12 border-top">
+								<p class="text-right mt-5 mb-5">
+									<button type='button' id='buttonEdit' class='btn btn-info btn-sm'>
+										<span data-feather='edit'></span>목록
+									</button>
+								</p>
+							</div>
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+				
+		<div class="modal fade" tabindex="-1" id="dialogAlert" role="dialog" aria-labelledby="edit" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<h4 class="modal-title custom_align" id="Heading">오류 발생</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-danger">
+							<span class="glyphicon glyphicon-warning-sign" id="msg"></span>
+						</div>
+					</div>
+					<div class="modal-footer ">
+						<button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign">OK</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<form th:action="@{/}">
+			<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+			<input type="hidden" id="boardPageNum" th:name="boardPageNum" th:value="${boardPageNum}"/>
+			<input type="hidden" id="boardPageSize" th:name="boardPageSize" th:value="${boardPageSize}"/>
+			<input type="hidden" id="postPageNum" th:name="postPageNum" th:value="${postPageNum}"/>
+			<input type="hidden" id="postPageSize" th:name="postPageSize" th:value="${postPageSize}"/>
+			<input type="hidden" id="boardIdx" th:name="boardIdx" th:value="${boardIdx}"/>
+			<input type="hidden" id="postIdx" th:name="postIdx" th:value="${postIdx}"/>
+			<input type="submit"/> 
+		</form>
+	</body>
+	<script src="/admin/js/jquery/jquery.min.js"></script>
+	<script src="/admin/js/bootstrap/bootstrap.bundle.min.js"></script>
+	<script src="/admin/js/dashboard/feather.min.js"></script>
+	<script src="/admin/js/dashboard/commons.js"></script>
+	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
+	<script>
+		$(document).ready(function(){
+			$.ajax({
+   			      url:"/admin/post/" + $('#postIdx').val()
+   			    , async:true
+   			    , type:'GET'
+   			    , data: {
+   			    }
+   			    , dataType:'json'
+   			    , success:function(data, msg, response) {
+   			    	console.log(data);
+   			    	var commentStr = "";
+   			    	if(data.resultVo.code == "0000"){
+	 					$("#boardName1").text(data.post.boardEntity.boardName);
+	 					$("#postTitle1").text(data.post.postTitle);
+	 					$("#postIdx1").text(data.post.postIdx);
+	 					$("#email1").html(getUserComp(data.post.memberEntity.email, 1));
+	 					$("#regDate1").text("작성일 " + data.post.regDate.substr(0, 10) + " " + data.post.regDate.substr(11, 8));
+	 					$("#modDate1").text(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
+	 					$("#modAdmin1").text(data.post.modAdmin);
+	 					$('#postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
+	 					$("#postContents1").html(data.post.postContents);
+	 					$("#postCnt1").text(data.post.postCnt);
+	 					/* $('#commentList').html(getCommentCompList({
+	 						numberOfElements:3,
+	 						content:[
+	 							{
+		 							  email:"seouldnd@naver.com"
+		 							, ranking:"1"
+		 							, commentContents:"test"
+		 							, regDate:"2020-10-01 10:28:40"
+		 							, commentIdx:"1"
+	 							},
+	 							{
+		 							  email:"seouldnd@naver.com"
+		 							, ranking:"1"
+		 							, commentContents:"test"
+		 							, regDate:"2020-10-01 10:28:40"
+		 							, commentIdx:"1"
+	 							},
+	 							{
+		 							  email:"seouldnd@naver.com"
+		 							, ranking:"1"
+		 							, commentContents:"test"
+		 							, regDate:"2020-10-01 10:28:40"
+		 							, commentIdx:"1"
+	 							}
+	 						]
+	 					})); */
+	 					
+	 					feather.replace();
+   			    	}else{
+   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+			    		$('#dialogAlert').modal('show');
+   			    	}
+   			    }
+   			    , error:function(e) {
+   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
+  			    		$('#dialogAlert').modal('show');
+   			    }
+			});
+			
+			feather.replace();
+		});
+	</script>
+</html>

@@ -100,155 +100,30 @@
 				</main>
 			</div>
 		</div>
-		
-		<div class="modal fade" id="dialogEdit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-						<h4 class="modal-title custom_align" id="Heading">게시물 정보 수정</h4>
-					</div>
-					<div class="modal-body">
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanPostTitle1" style="width:105px;">게시물명</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="postTitle1" disabled="true" aria-label="게시물명" aria-describedby="게시물명">
-							<input type="text" class="bmInput" id="postIdx1" disabled="true" aria-label="게시물순번" aria-describedby="게시물순번" style="display:none;">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanEmail" style="width:105px;">작성자</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="email1" disabled="true" aria-label="작성자" aria-describedby="작성자">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanRegDate1" style="width:105px;">등록일자</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="regDate1" disabled="true" aria-label="등록일자" aria-describedby="등록일자">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanmModDate1" style="width:105px;">수정일자</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="modDate1" disabled="true" aria-label="수정일자" aria-describedby="수정일자">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanmModAdmin1" style="width:105px;">변경관리자</span>
-							</div>
-							<input type="text" class="form-control bmInput" id="modAdmin1" disabled="true" aria-label="변경관리자" aria-describedby="변경관리자">
-						</div>
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<label class="input-group-text" for="postState1" style="width:105px;">게시물상태</label>
-							</div>
-							<select class="custom-select bmInput" id="postState1">
-								<option value="NORMAL">정상</option>
-								<option value="BLOCK">관리자 삭제</option>
-								<option value="DELETE">작성자 삭제</option>
-							</select>
-						</div>
-						<div class="row">
-							<div class="col-sm">
-								<span class="input-group-text">게시물내용</span>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm">
-								<span class="input-group-text"><div id="postContents1"></div></span>
-							</div>
-						</div>
-					</div>
-					<div class="modal-footer ">
-						<button type="button" class="btn btn-warning btn-lg" id="goUpdate"style="width: 100%;">
-							<span class="glyphicon glyphicon-ok-sign">Update</span>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" tabindex="-1" id="dialogAlert" role="dialog" aria-labelledby="edit" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-						<h4 class="modal-title custom_align" id="Heading">오류 발생</h4>
-					</div>
-					<div class="modal-body">
-						<div class="alert alert-danger">
-							<span class="glyphicon glyphicon-warning-sign" id="msg"></span>
-						</div>
-					</div>
-					<div class="modal-footer ">
-						<button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign">OK</span></button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" tabindex="-1" id="dialogComplete" role="dialog" aria-labelledby="edit" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-						<h4 class="modal-title custom_align" id="Heading">정상 처리</h4>
-					</div>
-					<div class="modal-body">
-						<div class="alert alert-success">
-							<span class="glyphicon glyphicon-warning-sign" id="msg"></span>
-						</div>
-					</div>
-					<div class="modal-footer ">
-						<button type="button" class="btn btn-success" data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign">OK</span></button>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="modal fade" id="dialogComments" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-						</button>
-						<h4 class="modal-title custom_align" id="Heading">댓글 관리</h4>
-					</div>
-					<div class="modal-body">
-						<div class="input-group mb-3">
-							<div class="input-group-prepend">
-								<span class="input-group-text" id="spanCommentIdx" style="width:200px;">작성자 이메일</span>
-							</div>
-							<button type='button' id='buttonEdit' class='btn btn-info btn-sm'><span data-feather='edit'></span></button>
-							<button type='button' id='buttonEdit' class='btn btn-info btn-sm'><span data-feather='edit'></span></button>
-							<input type="text" class="form-control bmInput" id="commentIdx" disabled="true" readonly="readonly" aria-label="게시물명" aria-describedby="게시물명">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		<form method="POST" action="/admin/post/view.html" id="formView">
+			<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+			<input type="hidden" id="boardPageNum1" th:name="boardPageNum" th:value="${boardPageNum}"/>
+			<input type="hidden" id="boardPageSize1" th:name="boardPageSize" th:value="${boardPageSize}"/>
+			<input type="hidden" id="postPageNum1" th:name="postPageNum" th:value="${postPageNum}"/>
+			<input type="hidden" id="postPageSize1" th:name="postPageSize" th:value="${postPageSize}"/>
+			<input type="hidden" id="boardIdx1" th:name="boardIdx" th:value="${boardIdx}"/>
+			<input type="hidden" id="postIdx1" th:name="postIdx" th:value="${postIdx}"/>
+			<input type="submit"/> 
+		</form>
 	</body>
 	<script src="/admin/js/jquery/jquery.min.js"></script>
 	<script src="/admin/js/bootstrap/bootstrap.bundle.min.js"></script>
 	<script src="/admin/js/dashboard/feather.min.js"></script>
+	<script src="/admin/js/dashboard/commons.js"></script>
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
-			var boardPageNum = 0;
-			var boardEleCnt = 0;
-			var pageSize = 5;
-			var boardNum = 0;
+			var boardPageNum = 0; // 게시판 페이징 현재 페이지 번호
+			var boardEleCnt = 0; // 게시판 element 개수
+			var boardPageSize = 5; // 게시판 페이징 페이지 사이즈
+			var boardIdx = 0; // 게시판 번호
+			var postPageSize = 10; // 게시물 페이지 사이즈
+			var postPageNum = 0; // 게시물 페이징 현재 페이지 번호
 			var pageInit = function(){
 				// 게시판 리스트 조회
 				getBoardList(true);
@@ -262,7 +137,7 @@
 				var type = "POST";
 				var data = {
 					  pageNum:boardPageNum
-					, pageSize:pageSize
+					, pageSize:boardPageSize
 					, _csrf:$('#csrf').val()
 				}
 				var onParam = {
@@ -278,11 +153,12 @@
 			   pagingInit : 게시물 페이징 초기화 여부 (true : 초기화, false : 초기화하지 않음)
 			*/
 			var getPostList = function(boardIdx, pageNum, pagingInit){
+				postPageNum = pageNum
 				var url = "/admin/posts";
 				var type = "POST";
 				var data = {
-					  pageNum:pageNum
-					, pageSize:"10"
+					  pageNum:postPageNum
+					, pageSize:postPageSize
 					, boardIdx:boardIdx
 					, _csrf:$('#csrf').val()
 				}
@@ -292,34 +168,6 @@
 				
 				getList(url, type, data, viewPostList, onParam, false);
 			}
-			
-			/* 데이터 조회
-			   url : url
-			   type : method 타입
-			   data : 조회 데이터
-			   onSuccess : 성공 시 수행 메소드
-			   onParam : 성공 시 수행할 메소드에 전달할 파라미터
-			   paging : 초기화 여부
-			*/
-			var getList = function(url, type, data, onSuccess, onParam){
-   				$.ajax({
-     			      url:url
-     			    , async:true
-     			    , type:type
-     			    , data:data
-     			    , dataType:'json'
-     			    , success:function(e) {
-     			    	data = e;
-     			    	
-     			    	onSuccess(data, onParam);
-     			    	
-     			    	console.log(data);
-     			    }
-     			    , error:function(e) {
-     			    	console.log(e);
-     			    }
-     			});
-   			}
 			
 			/* 게시판 데이터 nav 추가
 			   data : 게시물 데이터
@@ -377,7 +225,7 @@
    					// 다음
    					if(!$(this).hasClass("disabled")){
 	   					if(activeIdx + 1 >= liCnt){
-	   						if(boardPageNum + 1 < Math.ceil(boardEleCnt / pageSize)) {
+	   						if(boardPageNum + 1 < Math.ceil(boardEleCnt / boardPageSize)) {
 	   							boardPageNum += 1;
 	   							
 	   							getBoardList(true);
@@ -398,7 +246,7 @@
    					}
    					
    					// 다음 화살표 disable 처리
-   					if(boardEleCnt == (boardPageNum * pageSize + idx)){
+   					if(boardEleCnt == (boardPageNum * boardPageSize + idx)){
    						_boardNav.find('li:eq(' + (liCnt) + ')').addClass("disabled");
    					}else{
    						_boardNav.find('li:eq(' + (liCnt) + ')').removeClass("disabled");
@@ -406,9 +254,9 @@
    					
    					$('#spanBoardTitle h1').text("게시물 관리(" + $(this).text() + ")");
    					
-   					boardNum = $(this).attr("data");
+   					boardIdx = $(this).attr("data");
    					
-   					getPostList(boardNum, 0, true);
+   					getPostList(boardIdx, 0, true);
    				}
    			});
 			
@@ -424,8 +272,8 @@
 					html += "<tr>";
 					html += "<td><span class='d-inline-block text-truncate bmIdx' style='max-width: 30px;' title='" + data.content[i].postIdx + "'>";
 					html += data.content[i].postIdx + "</span></td>";
-					html += "<td><span class='d-inline-block text-truncate' style='max-width: 150px;' title='" + data.content[i].postTitle + "'>";
-					html += data.content[i].postTitle + "</span></td>";
+					html += "<td><a href='#' class='text-decoration-none d-inline-block text-truncate' id='goView' data='" + data.content[i].postIdx + "' style='max-width: 150px;' title='" + data.content[i].postTitle + "'>";
+					html += data.content[i].postTitle + "</a></td>";
 					html += "<td><span class='d-inline-block text-truncate' style='max-width: 80px;' title='" + data.content[i].email + "'>";
 					html += data.content[i].email + "</span></td>";
 					html += "<td>" + data.content[i].regDate.substr(0, 10) + "</td>";
@@ -461,81 +309,25 @@
 				
 				$('#pagination').twbsPagination({
 		            totalPages: totalPages,
-		            visiblePages: 10,
+		            visiblePages: postPageSize,
 		            onPageClick: function (event, page) {
 		                console.info(page + ' (from options)');
 		            }
 		        }).on('page', function (event, page) {
-		        	getPostList(boardNum, page, false);
+		        	getPostList(boardIdx, page, false);
 		            console.info(page + ' (from event listening)');
 		        });
 			};
 			
-			/* 테이블의 게시물 수정 버튼 클릭 */
-			$(document).on("click", "#buttonEdit", function(){
-				$('#dialogComments').modal('show');
-				return false;
-				var _tr = $(this).parent().parent();
-				var postIdx = _tr.find(".bmIdx").text();
-				$.ajax({
-	   			      url:"/admin/post/" + postIdx
-	   			    , async:true
-	   			    , type:'GET'
-	   			    , data: {
-	   			    }
-	   			    , dataType:'json'
-	   			    , success:function(data, msg, response) {
-	   			    	console.log(data);
-	   			    	if(data.resultVo.code == "0000"){
-		 					$("#dialogEdit #boardName1").val(data.post.boardName);
-		 					$("#dialogEdit #postTitle1").val(data.post.postTitle);
-		 					$("#dialogEdit #postIdx1").val(data.post.postIdx);
-		 					$("#dialogEdit #email1").val(data.post.email);
-		 					$("#dialogEdit #regDate1").val(data.post.regDate.substr(0, 10) + " " + data.post.regDate.substr(11, 8));
-		 					$("#dialogEdit #modDate1").val(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
-		 					$("#dialogEdit #modAdmin1").val(data.post.modAdmin);
-		 					$('#dialogEdit #postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
-		 					$("#dialogEdit #postContents1").html(data.post.postContents);
-	   			    		$('#dialogEdit').modal('show');
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
-				    		$('#dialogAlert').modal('show');
-	   			    	}
-	   			    }
-	   			    , error:function(e) {
-	   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
-   			    		$('#dialogAlert').modal('show');
-	   			    }
-	   			});
-			});
-			
-			/* 수정 dialog에 update 버튼 클릭 */
-			$('#goUpdate').on('click', function(){
-				var _dialog = $("#dialogEdit");
+			$(document).on("click", "#goView", function(){
+				$('#boardIdx1').val(boardIdx);
+				$('#postIdx1').val($(this).attr('data'));
+				$('#boardPageNum1').val(boardPageNum);
+				$('#boardPageSize1').val(boardPageSize);
+				$('#postPageNum1').val(postPageNum);
+				$('#postPageSize1').val(postPageSize);
 				
-				$.ajax({
-	   			      url:"/admin/post/" + _dialog.find("#postIdx1").val()
-	   			    , async:true
-	   			    , type:'PUT'
-	   			    , data: {
-	   			    	  postState:_dialog.find("#postState1").val()
-	   			    	, _csrf:$("#csrf").val()
-	   			    }
-	   			    , dataType:'json'
-	   			    , success:function(data, msg, response) {
-	   			    	if(data.resultVo.code == "0000"){
-	   			    		$('#dialogComplete #msg').html("수정됐습니다.");
-	   			    		$('#dialogComplete').modal('show');
-	   			    	}else{
-	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
-				    		$('#dialogAlert').modal('show');
-	   			    	}
-	   			    }
-	   			    , error:function(e) {
-	   			    	$('#dialogAlert #msg').html("수정에 실패했습니다. 개발팀에 문의해주세요.");
-			    		$('#dialogAlert').modal('show');
-	   			    }
-				});
+				$('#formView').submit();
 			});
 			
 			// 화면 초기화
