@@ -133,10 +133,10 @@ public class MemberController {
 	 * 회원 삭제
 	 */
 	@DeleteMapping(value="/admin/member/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<MemberVo> deleteOne (@PathVariable Long id) {
+	public ResponseEntity<MemberVo> deleteOne (@PathVariable Long id, MemberEntity member) {
 		logger.info("deleteOne");
 		MemberVo retObj = new MemberVo();
-		MemberEntity memberEntity = memberService.deleteById(id);
+		MemberEntity memberEntity = memberService.deleteById(id, member);
 		if(memberEntity == null){
 			retObj.setResultVo(messageHandler.getResultVo("result.code.DELETE.FAIL.MEMBER"));
 		}else {

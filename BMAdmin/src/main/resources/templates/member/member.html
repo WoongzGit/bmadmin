@@ -296,13 +296,22 @@
 					</div>
 					<div class="modal-body">
 						<div class="alert alert-danger">
-							<span class="glyphicon glyphicon-warning-sign">회원을 삭제하시겠습니까?</span>
+							<span class="glyphicon glyphicon-warning-sign" id="msg">회원을 삭제하시겠습니까?</span>
 						</div>
 					</div>
 					<div class="modal-footer ">
-						<button type="button" class="btn btn-danger" id="goDelete">
-							<input type="hidden" class="bmInput" id="memberIdx3"/>
-							<span class="glyphicon glyphicon-ok-sign">Yes</span>
+						<input type="hidden" class="bmInput" id="memberIdx3"/>
+						<input type="hidden" class="bmInput" id="memberState3"/>
+						<input type="hidden" class="bmInput" id="adminState3"/>
+						<input type="hidden" class="bmInput" id="divn3"/>
+						<button type="button" class="btn btn-danger member" id="goDelete">
+							<span class="glyphicon glyphicon-ok-sign">회원만</span>
+						</button>
+						<button type="button" class="btn btn-danger admin" id="goDelete">
+							<span class="glyphicon glyphicon-ok-sign">관리자만</span>
+						</button>
+						<button type="button" class="btn btn-danger both" id="goDelete">
+							<span class="glyphicon glyphicon-ok-sign">둘 다</span>
 						</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">
 							<span class="glyphicon glyphicon-remove">No</span>
@@ -362,20 +371,22 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
+			var pageSize = 10;
+			var pageNum = 1;
 			var emailCheck = false;
 			/* 모든 회원의 데이터 조회
 			   page : 페이지 번호
 			   paging : 초기화 여부
 			*/
-			var getList = function(page, paging){
+			var getList = function(paging){
    				var data = null;
    				$.ajax({
      			      url:"/admin/members"
      			    , async:true
      			    , type:'POST'
      			    , data: {
-     			    	  pageSize:"10"
-     			    	, pageNum:(page - 1)
+     			    	  pageSize:pageSize
+     			    	, pageNum:(pageNum - 1)
      			    	, _csrf:$("#csrf").val()
      			    }
      			    , dataType:'json'
@@ -418,11 +429,19 @@
 					html += "<span data-feather='edit'></span>";
 					html += "</button>";
 					html += "</td>";
-					html += "<td>";
-					html += "<button type='button' id='buttonDelete' class='btn btn-danger btn-sm'>";
-					html += "<span data-feather='trash'></span>";
-					html += "</button>";
-					html += "</td>";
+					if(data.content[i].adminState == "NORMAL" && data.content[i].memberState == "NORMAL"){
+						html += "<td>";
+						html += "<button type='button' id='buttonDelete' class='btn btn-danger btn-sm hide'>";
+						html += "<span data-feather='trash'></span>";
+						html += "</button>";
+						html += "</td>";
+					}else{
+						html += "<td>";
+						html += "<button type='button' id='buttonDelete' class='btn btn-warning btn-sm show'>";
+						html += "<span data-feather='trash'></span>";
+						html += "</button>";
+						html += "</td>";
+					}
 					html += "</tr>";
    				}
    				
@@ -437,12 +456,13 @@
 			var pagination = function(totalPages){
 				$('#pagination').twbsPagination({
 		            totalPages: totalPages,
-		            visiblePages: 10,
+		            visiblePages: pageSize,
 		            onPageClick: function (event, page) {
 		                console.info(page + ' (from options)');
 		            }
 		        }).on('page', function (event, page) {
-		        	getList(page, false);
+		        	pageNum = page;
+		        	getList(false);
 		            console.info(page + ' (from event listening)');
 		        });
 			};
@@ -624,7 +644,8 @@
    			    			_dialog.modal('hide');
    			    			$('#dialogComplete #msg').html("등록됐습니다.");
    	   			    		$('#dialogComplete').modal('show');
-   	   			    		getList(1, true);
+   	   			    		pageNum = 1;
+   	   			    		getList(true);
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 	 			    		$('#dialogAlert').modal('show');
@@ -706,26 +727,66 @@
 				
 				$('#memberIdx3').val(memberIdx);
 				
+				if($(this).hasClass("show")){
+					$('#dialogDelete #msg').html("회원을 복원하시겠습니까?");
+					$('#dialogDelete #divn3').val("show");
+				}else if($(this).hasClass("hide")){
+					$('#dialogDelete #msg').html("회원을 삭제하시겠습니까?");
+					$('#dialogDelete #divn3').val("hide");
+				}
+				
 				$('#dialogDelete').modal('show');
 			});
 			
 			/* 삭제 dialog에 yes 버튼 클릭 */
-			$('#goDelete').on('click', function(){
+			$(document).on('click', '#goDelete', function(){
 				var _dialog = $("#dialogDelete");
+				
+				if(_dialog.find('#divn3').val() == "show"){
+					if($(this).hasClass("member")){
+						_dialog.find('#memberState3').val("NORMAL");
+						_dialog.find('#adminState3').val("BLOCK");
+					}else if($(this).hasClass("admin")){
+						_dialog.find('#memberState3').val("BLOCK");
+						_dialog.find('#adminState3').val("NORMAL");
+					}else if($(this).hasClass("both")){
+						_dialog.find('#memberState3').val("NORMAL");
+						_dialog.find('#adminState3').val("NORMAL");
+					}
+				}else if(_dialog.find('#divn3').val() == "hide"){
+					if($(this).hasClass("member")){
+						_dialog.find('#memberState3').val("BLOCK");
+						_dialog.find('#adminState3').val("NORMAL");
+					}else if($(this).hasClass("admin")){
+						_dialog.find('#memberState3').val("NORMAL");
+						_dialog.find('#adminState3').val("BLOCK");
+					}else if($(this).hasClass("both")){
+						_dialog.find('#memberState3').val("BLOCK");
+						_dialog.find('#adminState3').val("BLOCK");
+					}
+				}
 				
 				$.ajax({
 	   			      url:"/admin/member/" + _dialog.find("#memberIdx3").val()
 	   			    , async:true
 	   			    , type:'DELETE'
 	   			    , data: {
-	   			    	_csrf:$("#csrf").val()
+	   			    	  _csrf:$("#csrf").val()
+	   			    	, memberState:_dialog.find('#memberState3').val()
+	   			    	, adminState:_dialog.find('#adminState3').val()
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
    			    		if(data.resultVo.code == "0000"){
    			    			_dialog.modal('hide');
-   			    			$('#dialogComplete #msg').html("삭제됐습니다.");
-   	   			    		$('#dialogComplete').modal('show');
+   			    			if(_dialog.find('#divn3').val() == "show"){
+   			    				$('#dialogComplete #msg').html("복원됐습니다.");
+	   	   			    		$('#dialogComplete').modal('show');
+   			    			}else if(_dialog.find('#divn3').val() == "hide"){
+	   			    			$('#dialogComplete #msg').html("삭제됐습니다.");
+	   	   			    		$('#dialogComplete').modal('show');
+   			    			}
+   	   			    		getList(true);
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 	 			    		$('#dialogAlert').modal('show');
@@ -739,7 +800,7 @@
 			});
 			
 			// 최초 1페이지 로딩
-			getList(1, true);
+			getList(true);
 		});
 	</script>
 </html>

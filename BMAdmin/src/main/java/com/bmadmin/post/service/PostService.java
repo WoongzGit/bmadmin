@@ -49,6 +49,22 @@ public class PostService {
 		return retObj;
 	}
 	
+	public PostEntity deleteById(Long id, PostEntity post) {
+		Optional<PostEntity> postEntity = postRepository.findById(id);
+		PostEntity retObj = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(postEntity.isPresent()) {
+			retObj = postEntity.get();
+			retObj.setModAdmin(auth.getName());
+			retObj.setPostState((retObj.getPostState().equals(post.getPostState()))?retObj.getPostState():post.getPostState());
+			retObj.setModDate(LocalDateTime.now());
+			retObj = postRepository.save(retObj);
+		}else {
+			retObj = null;
+		}
+		return retObj;
+	}
+	
 	@PostConstruct
 	public void initPost() {
 		PostEntity post;

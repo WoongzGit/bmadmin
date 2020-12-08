@@ -141,28 +141,90 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
-			$.ajax({
-   			      url:"/admin/post/" + $('#postIdx').val()
-   			    , async:true
-   			    , type:'GET'
-   			    , data: {
-   			    }
-   			    , dataType:'json'
-   			    , success:function(data, msg, response) {
-   			    	console.log(data);
-   			    	var commentStr = "";
-   			    	if(data.resultVo.code == "0000"){
-	 					$("#boardName1").text(data.post.boardEntity.boardName);
-	 					$("#postTitle1").text(data.post.postTitle);
-	 					$("#postIdx1").text(data.post.postIdx);
-	 					$("#email1").html(getUserComp(data.post.memberEntity.email, 1));
-	 					$("#regDate1").text("작성일 " + data.post.regDate.substr(0, 10) + " " + data.post.regDate.substr(11, 8));
-	 					$("#modDate1").text(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
-	 					$("#modAdmin1").text(data.post.modAdmin);
-	 					$('#postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
-	 					$("#postContents1").html(data.post.postContents);
-	 					$("#postCnt1").text(data.post.postCnt);
-	 					/* $('#commentList').html(getCommentCompList({
+			var init = function(){
+				getPostDetail();
+			};
+			
+			var getPostDetail = function(){
+				$.ajax({
+	   			      url:"/admin/post/" + $('#postIdx').val()
+	   			    , async:true
+	   			    , type:'GET'
+	   			    , data: {
+	   			    }
+	   			    , dataType:'json'
+	   			    , success:function(data, msg, response) {
+	   			    	console.log(data);
+	   			    	var commentStr = "";
+	   			    	if(data.resultVo.code == "0000"){
+		 					$("#boardName1").text(data.post.boardEntity.boardName);
+		 					$("#postTitle1").text(data.post.postTitle);
+		 					/* $("#postTitle1").attr("data", data.post.postIdx); */
+		 					$("#postIdx1").text(data.post.postIdx);
+		 					$("#email1").html(getUserComp(data.post.memberEntity.email, 1));
+		 					$("#regDate1").text("작성일 " + data.post.regDate.substr(0, 10) + " " + data.post.regDate.substr(11, 8));
+		 					$("#modDate1").text(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
+		 					$("#modAdmin1").text(data.post.modAdmin);
+		 					$('#postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
+		 					$("#postContents1").html(data.post.postContents);
+		 					$("#postCnt1").text(data.post.postCnt);
+		 					getCommentList(data.post.postIdx);
+		 					/* $('#commentList').html(getCommentCompList({
+		 						numberOfElements:3,
+		 						content:[
+		 							{
+			 							  email:"seouldnd@naver.com"
+			 							, ranking:"1"
+			 							, commentContents:"test"
+			 							, regDate:"2020-10-01 10:28:40"
+			 							, commentIdx:"1"
+		 							},
+		 							{
+			 							  email:"seouldnd@naver.com"
+			 							, ranking:"1"
+			 							, commentContents:"test"
+			 							, regDate:"2020-10-01 10:28:40"
+			 							, commentIdx:"1"
+		 							},
+		 							{
+			 							  email:"seouldnd@naver.com"
+			 							, ranking:"1"
+			 							, commentContents:"test"
+			 							, regDate:"2020-10-01 10:28:40"
+			 							, commentIdx:"1"
+		 							}
+		 						]
+		 					})); */
+		 					
+		 					feather.replace();
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+				    		$('#dialogAlert').modal('show');
+	   			    	}
+	   			    }
+	   			    , error:function(e) {
+	   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
+	  			    		$('#dialogAlert').modal('show');
+	   			    }
+				});
+			};
+			
+			var getCommentList = function(postIdx){
+				$.ajax({
+	   			      url:"/admin/comments"
+	   			    , async:true
+	   			    , type:'POST'
+	   			    , data: {
+	   			    	  _csrf:$('#csrf').val()
+	   			    	, postIdx:postIdx
+	   			    	, pageNum:0
+	   			    	, pageSize:10
+	   			    }
+	   			    , dataType:'json'
+	   			    , success:function(data, msg, response) {
+	   			    	console.log("여기다");
+	   			    	console.log(data);
+	 					$('#commentList').html(getCommentCompList({
 	 						numberOfElements:3,
 	 						content:[
 	 							{
@@ -187,21 +249,18 @@
 		 							, commentIdx:"1"
 	 							}
 	 						]
-	 					})); */
-	 					
+	 					}));
+		 					
 	 					feather.replace();
-   			    	}else{
-   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
-			    		$('#dialogAlert').modal('show');
-   			    	}
-   			    }
-   			    , error:function(e) {
-   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
-  			    		$('#dialogAlert').modal('show');
-   			    }
-			});
+	   			    }
+	   			    , error:function(e) {
+	   			    	$('#dialogAlert #msg').html("정상적으로 조회되지 않았습니다. 다시 조회해주세요.");
+	  			    		$('#dialogAlert').modal('show');
+	   			    }
+				});
+			};
 			
-			feather.replace();
+			init();
 		});
 	</script>
 </html>

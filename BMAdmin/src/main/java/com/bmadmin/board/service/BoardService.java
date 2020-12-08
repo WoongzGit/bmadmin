@@ -32,6 +32,10 @@ public class BoardService{
 		return boardRepository.findAll(pageable);
 	}
 	
+	public Page<BoardEntity> findByBoardState(PageRequest pageable) {
+		return boardRepository.findByBoardState(pageable, "NORMAL");
+	}
+	
 	public BoardEntity save(BoardEntity board) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
@@ -43,14 +47,14 @@ public class BoardService{
 		return boardRepository.save(board);
 	}
 	
-	public BoardEntity deleteById(Long id) {
+	public BoardEntity deleteById(Long id, BoardEntity board) {
 		Optional<BoardEntity> boardEntity = boardRepository.findById(id);
 		BoardEntity retObj = null;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(boardEntity.isPresent()) {
 			retObj = boardEntity.get();
 			retObj.setModAdmin(auth.getName());
-			retObj.setBoardState("BLOCK");
+			retObj.setBoardState((retObj.getBoardState().equals(board.getBoardState()))?retObj.getBoardState():board.getBoardState());
 			retObj.setModDate(LocalDateTime.now());
 			retObj = boardRepository.save(retObj);
 		}else {

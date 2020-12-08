@@ -46,10 +46,19 @@ public class BoardController {
 	/*
 	 * 게시판 목록 조회
 	 */
-	@PostMapping(value="/admin/boards", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<Page<BoardEntity>> list (@RequestParam int pageNum, @RequestParam int pageSize) {
+	@GetMapping(value="/admin/boards", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Page<BoardEntity>> getList (@RequestParam int pageNum, @RequestParam int pageSize) {
 		logger.info("list");
 		return new ResponseEntity<Page<BoardEntity>>(boardService.findAll(PageRequest.of(pageNum, pageSize)), HttpStatus.OK);
+	}
+	
+	/*
+	 * 게시판 목록 조회
+	 */
+	@PostMapping(value="/admin/boards", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<Page<BoardEntity>> postList (@RequestParam int pageNum, @RequestParam int pageSize) {
+		logger.info("list");
+		return new ResponseEntity<Page<BoardEntity>>(boardService.findByBoardState(PageRequest.of(pageNum, pageSize)), HttpStatus.OK);
 	}
 	
 	/*
@@ -133,10 +142,10 @@ public class BoardController {
 	 * 게시판 삭제
 	 */
 	@DeleteMapping(value="/admin/board/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<BoardVo> deleteOne (@PathVariable Long id) {
+	public ResponseEntity<BoardVo> deleteOne (@PathVariable Long id, BoardEntity board) {
 		logger.info("deleteOne");
 		BoardVo retObj = new BoardVo();
-		BoardEntity boardEntity = boardService.deleteById(id);
+		BoardEntity boardEntity = boardService.deleteById(id, board);
 		if(boardEntity == null){
 			retObj.setResultVo(messageHandler.getResultVo("result.code.DELETE.FAIL.BOARD"));
 		}else {

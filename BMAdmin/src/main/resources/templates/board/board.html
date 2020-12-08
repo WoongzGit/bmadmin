@@ -235,12 +235,13 @@
 					</div>
 					<div class="modal-body">
 						<div class="alert alert-danger">
-							<span class="glyphicon glyphicon-warning-sign">게시판을 삭제하시겠습니까?</span>
+							<span class="glyphicon glyphicon-warning-sign" id="msg">게시판을 삭제하시겠습니까?</span>
 						</div>
 					</div>
 					<div class="modal-footer ">
 						<button type="button" class="btn btn-danger" id="goDelete">
 							<input type="hidden" class="bmInput" id="boardIdx3"/>
+							<input type="hidden" class="bmInput" id="boardState3"/>
 							<span class="glyphicon glyphicon-ok-sign">Yes</span>
 						</button>
 						<button type="button" class="btn btn-default" data-dismiss="modal">
@@ -301,20 +302,23 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
+			var pageSize = 10;
+			var pageNum = 1;
+			
 			var dupCheck = false;
 			/* 모든 게시판의 데이터 조회
 			   page : 페이지 번호
 			   paging : 초기화 여부
 			*/
-			var getList = function(page, paging){
+			var getList = function(paging){
    				var data = null;
    				$.ajax({
      			      url:"/admin/boards"
      			    , async:true
-     			    , type:'POST'
+     			    , type:'GET'
      			    , data: {
-     			    	  pageSize:"10"
-     			    	, pageNum:(page - 1)
+     			    	  pageSize:pageSize
+     			    	, pageNum:(pageNum - 1)
      			    	, _csrf:$("#csrf").val()
      			    }
      			    , dataType:'json'
@@ -357,11 +361,19 @@
 					html += "<span data-feather='edit'></span>";
 					html += "</button>";
 					html += "</td>";
-					html += "<td>";
-					html += "<button type='button' id='buttonDelete' class='btn btn-danger btn-sm'>";
-					html += "<span data-feather='trash'></span>";
-					html += "</button>";
-					html += "</td>";
+					if(data.content[i].boardState == "NORMAL"){
+						html += "<td>";
+						html += "<button type='button' id='buttonDelete' class='btn btn-danger btn-sm hide'>";
+						html += "<span data-feather='trash'></span>";
+						html += "</button>";
+						html += "</td>";
+					}else{
+						html += "<td>";
+						html += "<button type='button' id='buttonDelete' class='btn btn-warning btn-sm show'>";
+						html += "<span data-feather='trash'></span>";
+						html += "</button>";
+						html += "</td>";
+					}
 					html += "</tr>";
    				}
    				
@@ -376,12 +388,13 @@
 			var pagination = function(totalPages){
 				$('#pagination').twbsPagination({
 		            totalPages: totalPages,
-		            visiblePages: 10,
+		            visiblePages: pageSize,
 		            onPageClick: function (event, page) {
 		                console.info(page + ' (from options)');
 		            }
 		        }).on('page', function (event, page) {
-		        	getList(page, false);
+		        	pageNum = page;
+		        	getList(false);
 		            console.info(page + ' (from event listening)');
 		        });
 			};
@@ -444,6 +457,7 @@
 	   			    		_dialog.modal('hide');
 	   			    		$('#dialogComplete #msg').html("수정됐습니다.");
 	   			    		$('#dialogComplete').modal('show');
+	   			    		getList(true);
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 				    		$('#dialogAlert').modal('show');
@@ -525,7 +539,7 @@
    			    			_dialog.modal('hide');
    			    			$('#dialogComplete #msg').html("등록됐습니다.");
    	   			    		$('#dialogComplete').modal('show');
-   	   			    		getList(1, true);
+   	   			    		getList(true);
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 	 			    		$('#dialogAlert').modal('show');
@@ -567,13 +581,23 @@
 				return true;
 			};
 			
-			/* 테이블의 게시판 삭제 버튼 클릭
-			*/
+			/* 테이블의 게시판 삭제 버튼 클릭 */
 			$(document).on("click", "#buttonDelete", function(){
 				var _tr = $(this).parent().parent();
 				var boardIdx = _tr.find(".bmIdx").text();
 				
 				$('#boardIdx3').val(boardIdx);
+				if($(this).hasClass("show")){
+					$('#boardState3').val("NORMAL");
+					$('#dialogDelete #msg').html("게시판을 복원하시겠습니까?");
+					$('#goDelete').removeClass("hide");
+					$('#goDelete').addClass("show");
+				}else if($(this).hasClass("hide")){
+					$('#boardState3').val("BLOCK");
+					$('#dialogDelete #msg').html("게시판을 삭제하시겠습니까?");
+					$('#goDelete').removeClass("show");
+					$('#goDelete').addClass("hide");
+				}
 				
 				$('#dialogDelete').modal('show');
 			});
@@ -581,20 +605,27 @@
 			/* 삭제 dialog에 yes 버튼 클릭 */
 			$('#goDelete').on('click', function(){
 				var _dialog = $("#dialogDelete");
+				var _this = $(this);
 				
 				$.ajax({
 	   			      url:"/admin/board/" + _dialog.find("#boardIdx3").val()
 	   			    , async:true
 	   			    , type:'DELETE'
 	   			    , data: {
-	   			    	_csrf:$("#csrf").val()
+	   			    	  _csrf:$("#csrf").val()
+	   			    	, boardState:_dialog.find("#boardState3").val()
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
    			    		if(data.resultVo.code == "0000"){
    			    			_dialog.modal('hide');
-   			    			$('#dialogComplete #msg').html("삭제됐습니다.");
-   	   			    		$('#dialogComplete').modal('show');
+   			    			if(_this.hasClass("show")){
+   			    				$('#dialogComplete #msg').html("복원됐습니다.");
+   							}else if(_this.hasClass("hide")){
+	   			    			$('#dialogComplete #msg').html("삭제됐습니다.");
+   							}
+   			    			$('#dialogComplete').modal('show');
+   	   			    		getList(true);
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 	 			    		$('#dialogAlert').modal('show');
@@ -608,7 +639,7 @@
 			});
 			
 			// 최초 1페이지 로딩
-			getList(1, true);
+			getList(true);
 		});
 	</script>
 </html>

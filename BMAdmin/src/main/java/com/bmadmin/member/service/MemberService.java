@@ -62,14 +62,14 @@ public class MemberService implements UserDetailsService{
 		return memberRepository.save(member);
 	}
 	
-	public MemberEntity deleteById(Long id) {
+	public MemberEntity deleteById(Long id, MemberEntity member) {
 		Optional<MemberEntity> memberEntity = memberRepository.findById(id);
 		MemberEntity retObj = null;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if(memberEntity.isPresent()) {
 			retObj = memberEntity.get();
-			retObj.setMemberState("BLOCK");
-			retObj.setAdminState("BLOCK");
+			retObj.setMemberState((retObj.getMemberState().equals(member.getMemberState()))?retObj.getMemberState():member.getMemberState());
+			retObj.setAdminState((retObj.getAdminState().equals(member.getAdminState()))?retObj.getAdminState():member.getAdminState());
 			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
 			retObj = memberRepository.save(retObj);

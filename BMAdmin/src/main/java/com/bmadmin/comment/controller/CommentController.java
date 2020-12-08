@@ -58,7 +58,7 @@ public class CommentController {
 		CommentVo retObj = new CommentVo();
 		CommentEntity commentEntity = commentService.updateById(id, comment);
 		if(commentEntity == null){
-			retObj.setResultVo(messageHandler.getResultVo("result.code.UPDATE.FAIL.BOARD"));
+			retObj.setResultVo(messageHandler.getResultVo("result.code.UPDATE.FAIL.COMMENT"));
 		}else {
 			retObj.setComment(commentEntity);
 			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));

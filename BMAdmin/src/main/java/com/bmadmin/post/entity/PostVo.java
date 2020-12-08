@@ -10,10 +10,6 @@ public class PostVo {
 	
 	PostEntity post;
 	
-	List<CommentEntity> comments;
-	
-	CommentEntity commentEntity;
-	
 	ResultVo resultVo;
 
 	public List<PostEntity> getPosts() {
@@ -38,21 +34,5 @@ public class PostVo {
 
 	public void setResultVo(ResultVo resultVo) {
 		this.resultVo = resultVo;
-	}
-
-	public List<CommentEntity> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<CommentEntity> comments) {
-		this.comments = comments;
-	}
-
-	public CommentEntity getCommentEntity() {
-		return commentEntity;
-	}
-
-	public void setCommentEntity(CommentEntity commentEntity) {
-		this.commentEntity = commentEntity;
 	}
 }

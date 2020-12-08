@@ -100,6 +100,77 @@
 				</main>
 			</div>
 		</div>
+		
+		<div class="modal fade" id="dialogDelete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<h4 class="modal-title custom_align" id="Heading">게시물 삭제</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-danger">
+							<span class="glyphicon glyphicon-warning-sign" id="msg">게시물을 삭제하시겠습니까?</span>
+						</div>
+					</div>
+					<div class="modal-footer ">
+						<input type="hidden" class="bmInput" id="postIdx3"/>
+						<input type="hidden" class="bmInput" id="postState3"/>
+						<button type="button" class="btn btn-danger" id="goDelete">
+							<span class="glyphicon glyphicon-ok-sign">Yes</span>
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							<span class="glyphicon glyphicon-remove">No</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" tabindex="-1" id="dialogAlert" role="dialog" aria-labelledby="edit" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<h4 class="modal-title custom_align" id="Heading">오류 발생</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-danger">
+							<span class="glyphicon glyphicon-warning-sign" id="msg"></span>
+						</div>
+					</div>
+					<div class="modal-footer ">
+						<button type="button" class="btn btn-danger" data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign">OK</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="modal fade" tabindex="-1" id="dialogComplete" role="dialog" aria-labelledby="edit" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<h4 class="modal-title custom_align" id="Heading">정상 처리</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-success">
+							<span class="glyphicon glyphicon-warning-sign" id="msg"></span>
+						</div>
+					</div>
+					<div class="modal-footer ">
+						<button type="button" class="btn btn-success" data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign">OK</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<form method="POST" action="/admin/post/view.html" id="formView">
 			<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 			<input type="hidden" id="boardPageNum1" th:name="boardPageNum" th:value="${boardPageNum}"/>
@@ -152,8 +223,7 @@
 			   pageNum : 조회할 게시판, 게시물의 페이지 번호
 			   pagingInit : 게시물 페이징 초기화 여부 (true : 초기화, false : 초기화하지 않음)
 			*/
-			var getPostList = function(boardIdx, pageNum, pagingInit){
-				postPageNum = pageNum
+			var getPostList = function(pagingInit){
 				var url = "/admin/posts";
 				var type = "POST";
 				var data = {
@@ -256,7 +326,9 @@
    					
    					boardIdx = $(this).attr("data");
    					
-   					getPostList(boardIdx, 0, true);
+   					postPageNum = 0;
+   					
+   					getPostList(true);
    				}
    			});
 			
@@ -275,14 +347,22 @@
 					html += "<td><a href='#' class='text-decoration-none d-inline-block text-truncate' id='goView' data='" + data.content[i].postIdx + "' style='max-width: 150px;' title='" + data.content[i].postTitle + "'>";
 					html += data.content[i].postTitle + "</a></td>";
 					html += "<td><span class='d-inline-block text-truncate' style='max-width: 80px;' title='" + data.content[i].email + "'>";
-					html += data.content[i].email + "</span></td>";
+					html += data.content[i].memberEntity.email + "</span></td>";
 					html += "<td>" + data.content[i].regDate.substr(0, 10) + "</td>";
 					html += "<td>" + data.content[i].modDate.substr(0, 10) + "</td>";
-					html += "<td>";
-					html += "<button type='button' id='buttonEdit' class='btn btn-info btn-sm'>";
-					html += "<span data-feather='edit'></span>";
-					html += "</button>";
-					html += "</td>";
+					if(data.content[i].postState == "NORMAL"){
+						html += "<td>";
+						html += "<button type='button' id='buttonDelete' class='btn btn-danger btn-sm hide'>";
+						html += "<span data-feather='trash'></span>";
+						html += "</button>";
+						html += "</td>";
+					}else{
+						html += "<td>";
+						html += "<button type='button' id='buttonDelete' class='btn btn-warning btn-sm show'>";
+						html += "<span data-feather='trash'></span>";
+						html += "</button>";
+						html += "</td>";
+					}
 					html += "</tr>";
    				}
    				
@@ -314,10 +394,68 @@
 		                console.info(page + ' (from options)');
 		            }
 		        }).on('page', function (event, page) {
-		        	getPostList(boardIdx, page, false);
+		        	postPageNum = page;
+		        	getPostList(false);
 		            console.info(page + ' (from event listening)');
 		        });
 			};
+			
+			/* 테이블의 게시판 삭제 버튼 클릭 */
+			$(document).on("click", "#buttonDelete", function(){
+				var _tr = $(this).parent().parent();
+				var postIdx = _tr.find(".bmIdx").text();
+				
+				$('#postIdx3').val(boardIdx);
+				if($(this).hasClass("show")){
+					$('#postState3').val("NORMAL");
+					$('#dialogDelete #msg').html("게시물을 복원하시겠습니까?");
+					$('#goDelete').removeClass("hide");
+					$('#goDelete').addClass("show");
+				}else if($(this).hasClass("hide")){
+					$('#postState3').val("BLOCK");
+					$('#dialogDelete #msg').html("게시물을 삭제하시겠습니까?");
+					$('#goDelete').removeClass("show");
+					$('#goDelete').addClass("hide");
+				}
+				
+				$('#dialogDelete').modal('show');
+			});
+			
+			/* 삭제 dialog에 yes 버튼 클릭 */
+			$('#goDelete').on('click', function(){
+				var _dialog = $("#dialogDelete");
+				var _this = $(this);
+				
+				$.ajax({
+	   			      url:"/admin/post/" + _dialog.find("#postIdx3").val()
+	   			    , async:true
+	   			    , type:'DELETE'
+	   			    , data: {
+	   			    	  _csrf:$("#csrf").val()
+	   			    	, postState:_dialog.find("#postState3").val()
+	   			    }
+	   			    , dataType:'json'
+	   			    , success:function(data, msg, response) {
+   			    		if(data.resultVo.code == "0000"){
+   			    			_dialog.modal('hide');
+   			    			if(_this.hasClass("show")){
+   			    				$('#dialogComplete #msg').html("복원됐습니다.");
+   							}else if(_this.hasClass("hide")){
+	   			    			$('#dialogComplete #msg').html("삭제됐습니다.");
+   							}
+   	   			    		$('#dialogComplete').modal('show');
+   	   			    		getPostList(true);
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+	 			    		$('#dialogAlert').modal('show');
+	   			    	}
+	   			    }
+	   			    , error:function(e) {
+	   			    	$('#dialogAlert #msg').html("삭제에 실패했습니다. 개발팀에 문의해주세요.");
+			    		$('#dialogAlert').modal('show');
+	   			    }
+				});
+			});
 			
 			$(document).on("click", "#goView", function(){
 				$('#boardIdx1').val(boardIdx);
