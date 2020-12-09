@@ -130,7 +130,7 @@ public class MemberService implements UserDetailsService{
 		member.setName("관리자");
 		member.setEmail("seouldnd1@naver.com");
 		member.setPassword(passwordEncoder.encode(messageHandler.getMessage("default.password")));
-		member.setAuth("ROLE_ADMIN, ROLE_MEMBER");
+		member.setAuth("ROLE_ADMIN,ROLE_MEMBER");
 		member.setMemberState("NORMAL");
 		member.setAdminState("NORMAL");
 		member.setRanking(1);
