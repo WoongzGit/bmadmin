@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bmadmin.common.handler.MessageHandler;
@@ -107,7 +108,25 @@ public class PostController {
 	}
 	
 	/*
-	 * 게시판 삭제
+	 * 게시물 수정
+	 */
+	@PutMapping(value="/admin/post/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<PostVo> updateOne (@PathVariable Long id, PostEntity post) {
+		logger.info("updateOne");
+		PostVo retObj = new PostVo();
+		PostEntity postEntity = postService.updateById(id, post);
+		if(postEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.UPDATE.FAIL.POST"));
+		}else {
+			retObj.setPost(postEntity);
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		
+		return new ResponseEntity<PostVo>(retObj, HttpStatus.OK);
+	}
+	
+	/*
+	 * 게시물 삭제
 	 */
 	@DeleteMapping(value="/admin/post/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<PostVo> deleteOne (@PathVariable Long id, PostEntity post) {

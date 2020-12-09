@@ -173,12 +173,12 @@
 		
 		<form method="POST" action="/admin/post/view.html" id="formView">
 			<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-			<input type="hidden" id="boardPageNum1" th:name="boardPageNum" th:value="${boardPageNum}"/>
-			<input type="hidden" id="boardPageSize1" th:name="boardPageSize" th:value="${boardPageSize}"/>
-			<input type="hidden" id="postPageNum1" th:name="postPageNum" th:value="${postPageNum}"/>
-			<input type="hidden" id="postPageSize1" th:name="postPageSize" th:value="${postPageSize}"/>
-			<input type="hidden" id="boardIdx1" th:name="boardIdx" th:value="${boardIdx}"/>
-			<input type="hidden" id="postIdx1" th:name="postIdx" th:value="${postIdx}"/>
+			<input type="hidden" id="boardPageNum" th:name="boardPageNum" th:value="${boardPageNum}"/>
+			<input type="hidden" id="boardPageSize" th:name="boardPageSize" th:value="${boardPageSize}"/>
+			<input type="hidden" id="postPageNum" th:name="postPageNum" th:value="${postPageNum}"/>
+			<input type="hidden" id="postPageSize" th:name="postPageSize" th:value="${postPageSize}"/>
+			<input type="hidden" id="boardIdx" th:name="boardIdx" th:value="${boardIdx}"/>
+			<input type="hidden" id="postIdx" th:name="postIdx" th:value="${postIdx}"/>
 			<input type="submit"/> 
 		</form>
 	</body>
@@ -394,7 +394,7 @@
 		                console.info(page + ' (from options)');
 		            }
 		        }).on('page', function (event, page) {
-		        	postPageNum = page;
+		        	postPageNum = page - 1;
 		        	getPostList(false);
 		            console.info(page + ' (from event listening)');
 		        });
@@ -458,12 +458,12 @@
 			});
 			
 			$(document).on("click", "#goView", function(){
-				$('#boardIdx1').val(boardIdx);
-				$('#postIdx1').val($(this).attr('data'));
-				$('#boardPageNum1').val(boardPageNum);
-				$('#boardPageSize1').val(boardPageSize);
-				$('#postPageNum1').val(postPageNum);
-				$('#postPageSize1').val(postPageSize);
+				$('#boardIdx').val(boardIdx);
+				$('#postIdx').val($(this).attr('data'));
+				$('#boardPageNum').val(boardPageNum);
+				$('#boardPageSize').val(boardPageSize);
+				$('#postPageNum').val(postPageNum);
+				$('#postPageSize').val(postPageSize);
 				
 				$('#formView').submit();
 			});

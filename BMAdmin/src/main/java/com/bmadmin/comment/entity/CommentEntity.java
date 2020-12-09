@@ -25,7 +25,7 @@ public class CommentEntity {
 	@Column(name = "commentContents", nullable=false)
 	private String commentContents;
 	
-	/* 게시물명 */
+	/* 게시물순서 */
 	@Column(name = "commentOrder", nullable=false)
 	private Integer commentOrder;
 
@@ -39,8 +39,8 @@ public class CommentEntity {
 	private MemberEntity memberEntity;
 	
 	/* 게시글 순번 */
-	@Column(name = "boardIdx", nullable=false)
-	private Long boardIdx;
+	@Column(name = "postIdx", nullable=false)
+	private Long postIdx;
 	
 	/* 등록일자 */
 	@Column(name = "regDate", nullable=true)
@@ -63,13 +63,13 @@ public class CommentEntity {
 	}
 	
 	public CommentEntity(Long commentIdx, String commentContents, Integer commentOrder, Long memberIdx,
-			Long boardIdx, LocalDateTime regDate, LocalDateTime modDate,
+			Long postIdx, LocalDateTime regDate, LocalDateTime modDate,
 			String modAdmin, String commentState) {
 		this.commentIdx = commentIdx;
 		this.commentContents = commentContents;
 		this.commentOrder = commentOrder;
 		this.memberIdx = memberIdx;
-		this.boardIdx = boardIdx;
+		this.postIdx = postIdx;
 		this.regDate = regDate;
 		this.modDate = modDate;
 		this.modAdmin = modAdmin;
@@ -116,12 +116,12 @@ public class CommentEntity {
 		this.memberEntity = memberEntity;
 	}
 
-	public Long getBoardIdx() {
-		return boardIdx;
+	public Long getPostIdx() {
+		return postIdx;
 	}
 
-	public void setBoardIdx(Long boardIdx) {
-		this.boardIdx = boardIdx;
+	public void setPostIdx(Long postIdx) {
+		this.postIdx = postIdx;
 	}
 
 	public LocalDateTime getRegDate() {

@@ -16,22 +16,22 @@ import com.bmadmin.comment.repository.CommentRepository;
 @Service
 public class CommentService {
 	@Autowired
-	private CommentRepository commentsRepository;
+	private CommentRepository commentRepository;
 	
 	public Optional<CommentEntity> findById(Long commentsIdx) {
-		return commentsRepository.findById(commentsIdx);
+		return commentRepository.findById(commentsIdx);
 	}
 	
 	public Page<CommentEntity> findAll(PageRequest pageable) {
-		return commentsRepository.findAll(pageable);
+		return commentRepository.findAll(pageable);
 	}
 	
-	public Page<CommentEntity> findByBoardIdx(PageRequest pageable, CommentEntity comments) {
-		return commentsRepository.findByBoardIdx(pageable, comments.getBoardIdx());
+	public Page<CommentEntity> findByPostIdx(PageRequest pageable, CommentEntity comments) {
+		return commentRepository.findByPostIdx(pageable, comments.getPostIdx());
 	}
 	
 	public CommentEntity updateById(Long commentsIdx, CommentEntity comments) {
-		Optional<CommentEntity> commentsEntity = commentsRepository.findById(commentsIdx);
+		Optional<CommentEntity> commentsEntity = commentRepository.findById(commentsIdx);
 		CommentEntity retObj = null;
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -40,28 +40,26 @@ public class CommentService {
 			retObj.setCommentState((retObj.getCommentState().equals(comments.getCommentState()))?retObj.getCommentState():comments.getCommentState());
 			retObj.setModAdmin(auth.getName());
 			retObj.setModDate(LocalDateTime.now());
-			retObj = commentsRepository.save(retObj);
+			retObj = commentRepository.save(retObj);
 		}else {
 			retObj = null;
 		}
 		return retObj;
 	}
 	
-//	@PostConstruct
-//	public void initComments() {
-//		CommentEntity comments;
-//		LocalDateTime localDateTime = LocalDateTime.now();
-//		
-//		comments = new CommentEntity();
-//		comments.setBoardIdx((long)1);
-//		comments.setCommentIdx((long)1);
-//		comments.setCommentOrder(1);
-//		comments.setCommentState("NORMAL");
-//		comments.setMemberIdx((long)1);
-//		comments.setModDate(localDateTime);
-//		comments.setRegDate(localDateTime);
-//		comments.setCommentContents("테스트 게시판 01 테스트 게시물 01 테스트 댓글 01");
-//		
-//		commentsRepository.save(comments);
-//	}
+	public CommentEntity deleteById(Long id, CommentEntity comment) {
+		Optional<CommentEntity> commentEntity = commentRepository.findById(id);
+		CommentEntity retObj = null;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if(commentEntity.isPresent()) {
+			retObj = commentEntity.get();
+			retObj.setModAdmin(auth.getName());
+			retObj.setCommentState((retObj.getCommentState().equals(comment.getCommentState()))?retObj.getCommentState():comment.getCommentState());
+			retObj.setModDate(LocalDateTime.now());
+			retObj = commentRepository.save(retObj);
+		}else {
+			retObj = null;
+		}
+		return retObj;
+	}
 }

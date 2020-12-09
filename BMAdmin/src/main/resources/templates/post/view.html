@@ -90,9 +90,9 @@
 						<div class="row" id="commentList">
 						</div>
 						<div class="row">
-							<div class="col-12 border-top">
+							<div class="col-12">
 								<p class="text-right mt-5 mb-5">
-									<button type='button' id='buttonEdit' class='btn btn-info btn-sm'>
+									<button type='button' id='buttonToList' class='btn btn-info btn-sm'>
 										<span data-feather='edit'></span>목록
 									</button>
 								</p>
@@ -100,6 +100,36 @@
 						</div>
 					</div>
 				</main>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="dialogDelete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+							<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+						</button>
+						<h4 class="modal-title custom_align" id="Heading">댓글 관리</h4>
+					</div>
+					<div class="modal-body">
+						<div class="alert alert-danger">
+							<span class="glyphicon glyphicon-warning-sign" id="msg"></span>
+						</div>
+					</div>
+					<div class="modal-footer ">
+						<input type="hidden" class="bmInput" id="postIdx3"/>
+						<input type="hidden" class="bmInput" id="postState3"/>
+						<input type="hidden" class="bmInput" id="commentIdx3"/>
+						<input type="hidden" class="bmInput" id="commentState3"/>
+						<button type="button" class="btn btn-danger" id="goDelete">
+							<span class="glyphicon glyphicon-ok-sign">Yes</span>
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							<span class="glyphicon glyphicon-remove">No</span>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 				
@@ -123,16 +153,13 @@
 				</div>
 			</div>
 		</div>
-		<form th:action="@{/}">
-			<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-			<input type="hidden" id="boardPageNum" th:name="boardPageNum" th:value="${boardPageNum}"/>
-			<input type="hidden" id="boardPageSize" th:name="boardPageSize" th:value="${boardPageSize}"/>
-			<input type="hidden" id="postPageNum" th:name="postPageNum" th:value="${postPageNum}"/>
-			<input type="hidden" id="postPageSize" th:name="postPageSize" th:value="${postPageSize}"/>
-			<input type="hidden" id="boardIdx" th:name="boardIdx" th:value="${boardIdx}"/>
-			<input type="hidden" id="postIdx" th:name="postIdx" th:value="${postIdx}"/>
-			<input type="submit"/> 
-		</form>
+		<input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+		<input type="hidden" id="boardPageNum" th:name="boardPageNum" th:value="${boardPageNum}"/>
+		<input type="hidden" id="boardPageSize" th:name="boardPageSize" th:value="${boardPageSize}"/>
+		<input type="hidden" id="postPageNum" th:name="postPageNum" th:value="${postPageNum}"/>
+		<input type="hidden" id="postPageSize" th:name="postPageSize" th:value="${postPageSize}"/>
+		<input type="hidden" id="boardIdx" th:name="boardIdx" th:value="${boardIdx}"/>
+		<input type="hidden" id="postIdx" th:name="postIdx" th:value="${postIdx}"/>
 	</body>
 	<script src="/admin/js/jquery/jquery.min.js"></script>
 	<script src="/admin/js/bootstrap/bootstrap.bundle.min.js"></script>
@@ -141,6 +168,10 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
+			var commentPageNum = 0;
+			var commentPageSize = 10;
+			var postIdx = null;
+			
 			var init = function(){
 				getPostDetail();
 			};
@@ -168,33 +199,8 @@
 		 					$('#postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
 		 					$("#postContents1").html(data.post.postContents);
 		 					$("#postCnt1").text(data.post.postCnt);
-		 					getCommentList(data.post.postIdx);
-		 					/* $('#commentList').html(getCommentCompList({
-		 						numberOfElements:3,
-		 						content:[
-		 							{
-			 							  email:"seouldnd@naver.com"
-			 							, ranking:"1"
-			 							, commentContents:"test"
-			 							, regDate:"2020-10-01 10:28:40"
-			 							, commentIdx:"1"
-		 							},
-		 							{
-			 							  email:"seouldnd@naver.com"
-			 							, ranking:"1"
-			 							, commentContents:"test"
-			 							, regDate:"2020-10-01 10:28:40"
-			 							, commentIdx:"1"
-		 							},
-		 							{
-			 							  email:"seouldnd@naver.com"
-			 							, ranking:"1"
-			 							, commentContents:"test"
-			 							, regDate:"2020-10-01 10:28:40"
-			 							, commentIdx:"1"
-		 							}
-		 						]
-		 					})); */
+		 					postIdx = data.post.postIdx;
+		 					getCommentList(false);
 		 					
 		 					feather.replace();
 	   			    	}else{
@@ -209,7 +215,7 @@
 				});
 			};
 			
-			var getCommentList = function(postIdx){
+			var getCommentList = function(isReload){
 				$.ajax({
 	   			      url:"/admin/comments"
 	   			    , async:true
@@ -217,39 +223,14 @@
 	   			    , data: {
 	   			    	  _csrf:$('#csrf').val()
 	   			    	, postIdx:postIdx
-	   			    	, pageNum:0
-	   			    	, pageSize:10
+	   			    	, pageNum:commentPageNum
+	   			    	, pageSize:commentPageSize
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
 	   			    	console.log("여기다");
 	   			    	console.log(data);
-	 					$('#commentList').html(getCommentCompList({
-	 						numberOfElements:3,
-	 						content:[
-	 							{
-		 							  email:"seouldnd@naver.com"
-		 							, ranking:"1"
-		 							, commentContents:"test"
-		 							, regDate:"2020-10-01 10:28:40"
-		 							, commentIdx:"1"
-	 							},
-	 							{
-		 							  email:"seouldnd@naver.com"
-		 							, ranking:"1"
-		 							, commentContents:"test"
-		 							, regDate:"2020-10-01 10:28:40"
-		 							, commentIdx:"1"
-	 							},
-	 							{
-		 							  email:"seouldnd@naver.com"
-		 							, ranking:"1"
-		 							, commentContents:"test"
-		 							, regDate:"2020-10-01 10:28:40"
-		 							, commentIdx:"1"
-	 							}
-	 						]
-	 					}));
+	   			    	getCommentCompList(data, isReload);
 		 					
 	 					feather.replace();
 	   			    }
@@ -259,6 +240,68 @@
 	   			    }
 				});
 			};
+			
+			$(document).on("click", "#moreComment", function(){
+				commentPageNum++;
+				getCommentList(false);
+			});
+			
+			$(document).on("click", "#buttonComDelete", function(){
+				$('#goDelete').removeClass("show");
+				$('#goDelete').removeClass("hide");
+				
+				if($(this).hasClass("show")){
+					$('#goDelete').addClass("show");
+					$('#dialogDelete #msg').text("복원하시겠습니까?");
+					
+				}else if($(this).hasClass("hide")){
+					$('#goDelete').addClass("hide");
+					$('#dialogDelete #msg').text("삭제하시겠습니까?");
+				}
+				
+				$('#commentIdx3').val($(this).attr("data"));
+				
+				$("#dialogDelete").modal('show');
+			});
+			
+			/* 삭제 dialog에 yes 버튼 클릭 */
+			$('#goDelete').on('click', function(){
+				var _dialog = $("#dialogDelete");
+				var _this = $(this);
+				var commentState = "BLOCK";
+				
+				if($(this).hasClass("show")){
+					commentState = "NORMAL";
+				}
+				
+				$.ajax({
+	   			      url:"/admin/comment/" + _dialog.find("#commentIdx3").val()
+	   			    , async:true
+	   			    , type:'DELETE'
+	   			    , data:{
+							  _csrf:$("#csrf").val()
+			   				, commentState:commentState
+						}
+	   			    , dataType:'json'
+	   			    , success:function(data, msg, response) {
+   			    		if(data.resultVo.code == "0000"){
+   			    			_dialog.modal('hide');
+   	   			    		getCommentList(true);
+	   			    	}else{
+	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
+	 			    		$('#dialogAlert').modal('show');
+	   			    	}
+	   			    }
+	   			    , error:function(e) {
+	   			    	$('#dialogAlert #msg').html("삭제에 실패했습니다. 개발팀에 문의해주세요.");
+			    		$('#dialogAlert').modal('show');
+	   			    }
+				});
+			});
+			
+			$('#buttonToList').on("click", function(){
+				location.href="/admin/post/list.html";
+			});
 			
 			init();
 		});

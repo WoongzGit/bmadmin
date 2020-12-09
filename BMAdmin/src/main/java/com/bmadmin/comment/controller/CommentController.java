@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +47,19 @@ public class CommentController {
 	@PostMapping(value="/admin/comments", produces = {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<Page<CommentEntity>> list (@RequestParam int pageNum, @RequestParam int pageSize, CommentEntity comment) {
 		logger.info("list");
-		return new ResponseEntity<Page<CommentEntity>>(commentService.findByBoardIdx(PageRequest.of(pageNum, pageSize), comment), HttpStatus.OK);
+		logger.info("pageNum : " + pageNum);
+		logger.info("pageSize : " + pageSize);
+		logger.info("comment.getPostIdx() : " + comment.getPostIdx());
+		logger.info("comment.getCommentContents() : " + comment.getCommentContents());
+		logger.info("comment.getCommentIdx() : " + comment.getCommentIdx());
+		logger.info("comment.getCommentOrder() : " + comment.getCommentOrder());
+		logger.info("comment.getCommentState() : " + comment.getCommentState());
+		logger.info("comment.getMemberIdx() : " + comment.getMemberIdx());
+		logger.info("comment.getModAdmin() : " + comment.getModAdmin());
+		logger.info("comment.getModDate() : " + comment.getModDate());
+		logger.info("comment.getRegDate() : " + comment.getRegDate());
+
+		return new ResponseEntity<Page<CommentEntity>>(commentService.findByPostIdx(PageRequest.of(pageNum, pageSize), comment), HttpStatus.OK);
 	}
 	
 	/*
@@ -59,6 +72,24 @@ public class CommentController {
 		CommentEntity commentEntity = commentService.updateById(id, comment);
 		if(commentEntity == null){
 			retObj.setResultVo(messageHandler.getResultVo("result.code.UPDATE.FAIL.COMMENT"));
+		}else {
+			retObj.setComment(commentEntity);
+			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));
+		}
+		
+		return new ResponseEntity<CommentVo>(retObj, HttpStatus.OK);
+	}
+	
+	/*
+	 * 댓글 삭제
+	 */
+	@DeleteMapping(value="/admin/comment/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+	public ResponseEntity<CommentVo> deleteOne (@PathVariable Long id, CommentEntity comment) {
+		logger.info("deleteOne");
+		CommentVo retObj = new CommentVo();
+		CommentEntity commentEntity = commentService.deleteById(id, comment);
+		if(commentEntity == null){
+			retObj.setResultVo(messageHandler.getResultVo("result.code.DELETE.FAIL.COMMENT"));
 		}else {
 			retObj.setComment(commentEntity);
 			retObj.setResultVo(messageHandler.getResultVo("result.code.OK"));

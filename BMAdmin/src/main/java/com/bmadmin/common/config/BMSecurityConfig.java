@@ -35,7 +35,7 @@ public class BMSecurityConfig extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/admin/css/**", "/admin/js/**", "/admin/vender/**", "/admin/js/**", "/admin/images/**", "/*.ico", "/test/**");
+		web.ignoring().antMatchers("/admin/css/**", "/admin/js/**", "/admin/vender/**", "/admin/js/**", "/admin/images/**", "/*.ico");
 	}
 	
 	@Override
@@ -47,10 +47,10 @@ public class BMSecurityConfig extends WebSecurityConfigurerAdapter{
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 			.antMatchers("/admin/login").permitAll()
-			.antMatchers("/admin/member/**").hasRole("ADMIN")
-			.antMatchers("/admin/board/**").hasRole("ADMIN")
-			.antMatchers("/admin/post/**").hasRole("ADMIN")
-			.antMatchers("/admin/comment/**").hasRole("ADMIN")
+			.antMatchers("/admin/member/**").hasRole("ROLE_ADMIN")
+			.antMatchers("/admin/board/**").hasRole("ROLE_ADMIN")
+			.antMatchers("/admin/post/**").hasRole("ROLE_ADMIN")
+			.antMatchers("/admin/comment/**").hasRole("ROLE_ADMIN")
 		.and()
 			.formLogin()
 			.loginPage("/admin/login")
