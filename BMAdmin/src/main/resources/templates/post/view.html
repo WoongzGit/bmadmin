@@ -167,14 +167,16 @@
 	<script src="/admin/js/jquery/jquery.twbsPagination.js"></script>
 	<script>
 		$(document).ready(function(){
-			var commentPageNum = 0;
-			var commentPageSize = 10;
-			var postIdx = null;
+			var commentPageNum = 0; /* 댓글 현재 페이지 */
+			var commentPageSize = 10; /* 댓글 페이지 크기 */
+			var postIdx = null; /* 현재 게시글 순번 */
 			
+			/* 페이지 초기화 */
 			var init = function(){
 				getPostDetail();
 			};
 			
+			/* 게시글 상세 조회 */
 			var getPostDetail = function(){
 				$.ajax({
 	   			      url:"/admin/post/" + $('#postIdx').val()
@@ -215,6 +217,7 @@
 				});
 			};
 			
+			/* 댓글 리스트 가져오기 */
 			var getCommentList = function(isReload){
 				$.ajax({
 	   			      url:"/admin/comments"
@@ -241,11 +244,13 @@
 				});
 			};
 			
+			/* 댓글 더보기 버튼 */
 			$(document).on("click", "#moreComment", function(){
 				commentPageNum++;
 				getCommentList(false);
 			});
 			
+			/* 댓글 삭제 버튼 */
 			$(document).on("click", "#buttonComDelete", function(){
 				$('#goDelete').removeClass("show");
 				$('#goDelete').removeClass("hide");
@@ -299,10 +304,12 @@
 				});
 			});
 			
+			/* 목록 이동 버튼 */
 			$('#buttonToList').on("click", function(){
 				location.href="/admin/post/list.html";
 			});
 			
+			/* 페이지 초기화 */
 			init();
 		});
 	</script>

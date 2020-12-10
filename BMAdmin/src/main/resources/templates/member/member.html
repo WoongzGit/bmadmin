@@ -742,25 +742,26 @@
 			$(document).on('click', '#goDelete', function(){
 				var _dialog = $("#dialogDelete");
 				
-				if(_dialog.find('#divn3').val() == "show"){
-					if($(this).hasClass("member")){
+				// 회원의 상태에 따라 삭제 값 설정
+				if(_dialog.find('#divn3').val() == "show"){				// 삭제된 경우
+					if($(this).hasClass("member")){						// 회원만 복원
 						_dialog.find('#memberState3').val("NORMAL");
 						_dialog.find('#adminState3').val("BLOCK");
-					}else if($(this).hasClass("admin")){
+					}else if($(this).hasClass("admin")){				// 관리자만 복원
 						_dialog.find('#memberState3').val("BLOCK");
 						_dialog.find('#adminState3').val("NORMAL");
-					}else if($(this).hasClass("both")){
+					}else if($(this).hasClass("both")){					// 둘다 복원
 						_dialog.find('#memberState3').val("NORMAL");
 						_dialog.find('#adminState3').val("NORMAL");
 					}
-				}else if(_dialog.find('#divn3').val() == "hide"){
-					if($(this).hasClass("member")){
+				}else if(_dialog.find('#divn3').val() == "hide"){		// 정상인 경우
+					if($(this).hasClass("member")){						// 회원만 삭제
 						_dialog.find('#memberState3').val("BLOCK");
 						_dialog.find('#adminState3').val("NORMAL");
-					}else if($(this).hasClass("admin")){
+					}else if($(this).hasClass("admin")){				// 관리자만 삭제
 						_dialog.find('#memberState3').val("NORMAL");
 						_dialog.find('#adminState3').val("BLOCK");
-					}else if($(this).hasClass("both")){
+					}else if($(this).hasClass("both")){					// 둘다 삭제
 						_dialog.find('#memberState3').val("BLOCK");
 						_dialog.find('#adminState3').val("BLOCK");
 					}
