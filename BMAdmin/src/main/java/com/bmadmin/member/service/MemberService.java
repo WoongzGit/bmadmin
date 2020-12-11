@@ -51,6 +51,7 @@ public class MemberService implements UserDetailsService{
 		member.setMemberTry(0);
 		member.setModDate(LocalDateTime.now());
 		member.setRanking(0);
+		member.setPostCnt(0);
 		member.setRegAdmin(auth.getName());
 		member.setModAdmin(auth.getName());
 		member.setPassword(passwordEncoder.encode(member.getEmail()));
@@ -138,6 +139,7 @@ public class MemberService implements UserDetailsService{
 		member.setModDate(LocalDateTime.now());
 		member.setMemberTry(0);
 		member.setAdminTry(0);
+		member.setPostCnt(0);
 		member.setRegAdmin("seouldnd1@naver.com");
 		member.setModAdmin("seouldnd1@naver.com");
 		
@@ -155,6 +157,7 @@ public class MemberService implements UserDetailsService{
 		member.setModDate(LocalDateTime.now());
 		member.setMemberTry(0);
 		member.setAdminTry(0);
+		member.setPostCnt(0);
 		member.setRegAdmin("seouldnd1@naver.com");
 		member.setModAdmin("seouldnd1@naver.com");
 		
