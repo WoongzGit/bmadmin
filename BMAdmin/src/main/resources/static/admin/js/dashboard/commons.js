@@ -33,7 +33,6 @@ var getList = function(url, type, data, onSuccess, onParam){
 var getUserComp = function(email, ranking){
 	var feather = "";
 	var html = "";
-	console.log("getUserComp : " + email + "\t" + ranking);
 	switch(ranking){
 	case 1 : feather = "chrome"; break;
 	case 9 : feather = "compass"; break;
@@ -50,14 +49,16 @@ var getUserComp = function(email, ranking){
    data : 페이징 처리된 데이터
 */
 var getCommentCompList = function(data, isReload){
+	if(!data.first){
+		$('#commentList').children().last().remove();
+		$('#commentList .reload').removeClass("reload");
+	}else{
+		$('#commentList').children().remove();
+	}
 	if(isReload){
 		$('#commentList .reload').remove();
 	}
 	
-	if(!data.first){
-		$('#commentList .reload').removeClass("reload");
-		$('#commentList').children().last().remove();
-	}
 	
 	$('#commentList').append(getCommentHtml(data));
 }
@@ -71,7 +72,6 @@ var getCommentHtml = function(data){
 	var comment = null;
 	for(var i = 0; i < data.numberOfElements; i++){
 		comment = data.content[i];
-		console.log(i);
 		console.log(comment);
 		html += '<div class="col-9 border-top reload">';
 		html += getUserComp(comment.memberEntity.email, comment.memberEntity.ranking);

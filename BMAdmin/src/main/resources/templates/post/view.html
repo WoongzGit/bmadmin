@@ -194,9 +194,9 @@
 		 					$('#curPageName').text(data.post.postTitle);
 		 					/* $("#postTitle1").attr("data", data.post.postIdx); */
 		 					$("#postIdx1").text(data.post.postIdx);
-		 					$("#email1").html(getUserComp(data.post.memberEntity.email, 1));
+		 					$("#email1").html(getUserComp(data.post.memberEntity.email, data.post.memberEntity.ranking));
 		 					$("#regDate1").text("작성일 " + data.post.regDate.substr(0, 10) + " " + data.post.regDate.substr(11, 8));
-		 					$("#modDate1").text(data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8));
+		 					$("#modDate1").text(((data.post.modDate == null)?"-":data.post.modDate.substr(0, 10) + " " + data.post.modDate.substr(11, 8)));
 		 					$("#modAdmin1").text(data.post.modAdmin);
 		 					$('#postState1').find('option[value="' + data.post.postState + '"]').attr("selected",true);
 		 					$("#postContents1").html(data.post.postContents);
@@ -231,7 +231,6 @@
 	   			    }
 	   			    , dataType:'json'
 	   			    , success:function(data, msg, response) {
-	   			    	console.log("여기다");
 	   			    	console.log(data);
 	   			    	getCommentCompList(data, isReload);
 		 					

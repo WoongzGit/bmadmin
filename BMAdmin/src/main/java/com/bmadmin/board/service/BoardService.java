@@ -84,29 +84,17 @@ public class BoardService{
 	@PostConstruct
 	public void initBoard() {
 		BoardEntity board;
+		LocalDateTime localDateTime = LocalDateTime.now();
 		
 		board = new BoardEntity();
-		board.setBoardName("테스트 게시판 01");
-		board.setBoardDesc("테스트 게시판 01 설명");
-		board.setRegDate(LocalDateTime.now());
-		board.setModDate(LocalDateTime.now());
-		board.setRegAdmin("seouldnd1@naver.com");
-		board.setModAdmin("seouldnd1@naver.com");
+		board.setBoardName("최초의 게시판");
+		board.setBoardDesc("테스트 게시판입니다.");
+		board.setRegDate(localDateTime);
+		board.setModDate(localDateTime);
+		board.setRegAdmin("admin@test.com");
+		board.setModAdmin("admin@test.com");
 		board.setBoardState("NORMAL");
 		
 		boardRepository.save(board);
-		
-		for(int i = 2; i < 25; i++) {
-			board = new BoardEntity();
-			board.setBoardName("테스트 게시판 0" + i);
-			board.setBoardDesc("테스트 게시판 0" + i + " 설명");
-			board.setRegDate(LocalDateTime.now());
-			board.setModDate(LocalDateTime.now());
-			board.setRegAdmin("seouldnd1@naver.com");
-			board.setModAdmin("seouldnd1@naver.com");
-			board.setBoardState("NORMAL");
-			
-			boardRepository.save(board);
-		}
 	}
 }

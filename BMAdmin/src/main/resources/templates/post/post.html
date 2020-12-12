@@ -349,7 +349,7 @@
 					html += "<td><span class='d-inline-block text-truncate' style='max-width: 80px;' title='" + data.content[i].email + "'>";
 					html += data.content[i].memberEntity.email + "</span></td>";
 					html += "<td>" + data.content[i].regDate.substr(0, 10) + "</td>";
-					html += "<td>" + data.content[i].modDate.substr(0, 10) + "</td>";
+					html += "<td>" + ((data.content[i].modDate == null)?"-":data.content[i].modDate.substr(0, 10)) + "</td>";
 					if(data.content[i].postState == "NORMAL"){
 						html += "<td>";
 						html += "<button type='button' id='buttonDelete' class='btn btn-danger btn-sm hide'>";

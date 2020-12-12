@@ -50,7 +50,7 @@ public class MemberService implements UserDetailsService{
 		member.setRegDate(LocalDateTime.now());
 		member.setMemberTry(0);
 		member.setModDate(LocalDateTime.now());
-		member.setRanking(0);
+		member.setRanking(70);
 		member.setPostCnt(0);
 		member.setRegAdmin(auth.getName());
 		member.setModAdmin(auth.getName());
@@ -129,7 +129,7 @@ public class MemberService implements UserDetailsService{
 		
 		member = new MemberEntity();
 		member.setName("관리자");
-		member.setEmail("seouldnd1@naver.com");
+		member.setEmail("admin@test.com");
 		member.setPassword(passwordEncoder.encode(messageHandler.getMessage("default.password")));
 		member.setAuth("ROLE_ADMIN,ROLE_MEMBER");
 		member.setMemberState("NORMAL");
@@ -140,28 +140,9 @@ public class MemberService implements UserDetailsService{
 		member.setMemberTry(0);
 		member.setAdminTry(0);
 		member.setPostCnt(0);
-		member.setRegAdmin("seouldnd1@naver.com");
-		member.setModAdmin("seouldnd1@naver.com");
+		member.setRegAdmin("admin@test.com");
+		member.setModAdmin("admin@test.com");
 		
 		memberRepository.save(member);
-		
-		member = new MemberEntity();
-		member.setName("관리자");
-		member.setEmail("seouldnd2@naver.com");
-		member.setPassword(passwordEncoder.encode(messageHandler.getMessage("default.password")));
-		member.setAuth("ROLE_ADMIN");
-		member.setMemberState("NORMAL");
-		member.setAdminState("NORMAL");
-		member.setRanking(1);
-		member.setRegDate(LocalDateTime.now());
-		member.setModDate(LocalDateTime.now());
-		member.setMemberTry(0);
-		member.setAdminTry(0);
-		member.setPostCnt(0);
-		member.setRegAdmin("seouldnd1@naver.com");
-		member.setModAdmin("seouldnd1@naver.com");
-		
-		memberRepository.save(member);
-//		}
 	}
 }

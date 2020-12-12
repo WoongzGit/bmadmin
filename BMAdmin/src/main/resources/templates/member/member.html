@@ -17,7 +17,6 @@
 			<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
 					<a class="nav-link" href="/admin/logout">Log out</a>
@@ -185,7 +184,7 @@
 							<select class="custom-select bmInput" id="memberState1">
 								<option value="NORMAL">정상</option>
 								<option value="BLOCK">관리자 삭제</option>
-								<option value="PWLOCK">비밀번호 3회 이상 불일치</option>
+								<option value="PWLOCK">비밀번호 5회 이상 불일치</option>
 							</select>
 						</div>
 						<div class="input-group mb-3">
@@ -201,7 +200,7 @@
 							<select class="custom-select bmInput" id="adminState1">
 								<option  value="NORMAL">정상</option>
 								<option  value="BLOCK">관리자 삭제</option>
-								<option  value="PWLOCK">비밀번호 3회 이상 불일치</option>
+								<option  value="PWLOCK">비밀번호 5회 이상 불일치</option>
 							</select>
 						</div>
 						<div class="input-group mb-3">
@@ -262,7 +261,7 @@
 							<select class="custom-select bmInput" id="memberState2">
 								<option value="NORMAL">정상</option>
 								<option value="BLOCK">관리자 삭제</option>
-								<option value="PWLOCK">비밀번호 3회 이상 불일치</option>
+								<option value="PWLOCK">비밀번호 5회 이상 불일치</option>
 							</select>
 						</div>
 						<div class="input-group mb-3">
@@ -272,7 +271,7 @@
 							<select class="custom-select bmInput" id="adminState2">
 								<option value="NORMAL">정상</option>
 								<option value="BLOCK">관리자 삭제</option>
-								<option value="PWLOCK">비밀번호 3회 이상 불일치</option>
+								<option value="PWLOCK">비밀번호 5회 이상 불일치</option>
 							</select>
 						</div>
 					</div>
@@ -490,8 +489,8 @@
 		 					$("#dialogEdit #regAdmin1").val(data.member.regAdmin);
 		 					$("#dialogEdit #modDate1").val(data.member.modDate.substr(0, 10) + " " + data.member.modDate.substr(11, 8));
 		 					$("#dialogEdit #modAdmin1").val(data.member.modAdmin);
-		 					$('#dialogEdit #memberState1').find('option[value="' + data.member.memberState + '"]').attr("selected",true);
-		 					$('#dialogEdit #adminState1').find('option[value="' + data.member.adminState + '"]').attr("selected",true);
+		 					$('#dialogEdit #memberState1').val(data.member.memberState);
+		 					$('#dialogEdit #adminState1').val(data.member.adminState);
 		 					$("#dialogEdit #memberTry1").val(data.member.memberTry);
 		 					$("#dialogEdit #adminTry1").val(data.member.adminTry);
 	   			    		$('#dialogEdit').modal('show');
@@ -533,6 +532,7 @@
 	   			    		_dialog.modal('hide');
 	   			    		$('#dialogComplete #msg').html("수정됐습니다.");
 	   			    		$('#dialogComplete').modal('show');
+	   			    		getList(true);
 	   			    	}else{
 	   			    		$('#dialogAlert #msg').html(data.resultVo.msg);
 				    		$('#dialogAlert').modal('show');

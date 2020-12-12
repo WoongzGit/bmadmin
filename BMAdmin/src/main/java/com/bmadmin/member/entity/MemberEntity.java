@@ -40,7 +40,7 @@ public class MemberEntity implements UserDetails{
 	private String auth;
 	
 	/* 랭킹 */
-	@Column(name = "ranking", nullable=true)
+	@Column(name = "ranking", nullable=false)
 	private Integer ranking;
 	
 	/* 등록일자 */
@@ -68,14 +68,14 @@ public class MemberEntity implements UserDetails{
 	private Integer adminTry;
 	
 	/* 등록 관리자 */
-	@Column(name = "regAdmin", nullable=false)
+	@Column(name = "regAdmin", nullable=true)
 	private String regAdmin;
 	
 	/* 수정 관리자 */
-	@Column(name = "modAdmin", nullable=false)
+	@Column(name = "modAdmin", nullable=true)
 	private String modAdmin;
 	
-	/* 당일 작성 게시물 횟수 */
+	/* 당일 작성 게시글 횟수 */
 	@Column(name = "postCnt", nullable=false)
 	private Integer postCnt;
 	
