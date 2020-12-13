@@ -129,7 +129,7 @@ public class MemberService implements UserDetailsService{
 		
 		member = new MemberEntity();
 		member.setName("관리자");
-		member.setEmail("admin@test.com");
+		member.setEmail(passwordEncoder.encode(messageHandler.getMessage("default.admin.email")));
 		member.setPassword(passwordEncoder.encode(messageHandler.getMessage("default.password")));
 		member.setAuth("ROLE_ADMIN,ROLE_MEMBER");
 		member.setMemberState("NORMAL");
